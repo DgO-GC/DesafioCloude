@@ -1,6 +1,6 @@
 # Plano Técnico — Motor de Cálculo de Reembolso
 
-**Versão:** 1.0 · **Baseado na spec:** 1.0
+**Versão:** 2.0 · **Baseado na spec:** 2.0
 
 > Aqui mora o COMO. Este arquivo pode e deve falar de linguagem, biblioteca e
 > arquitetura. O que ele **não** pode é introduzir regra de negócio nova — se
@@ -21,40 +21,54 @@
 ## 2. Arquitetura
 
 ```
-arquivo JSON ─► cli.py ─► entrada.py ─► regras.py ─► saida.py ─► arquivo JSON
-                (I/O)     (valida,       (núcleo puro:   (serializa,
-                           arredonda,     etapas na       totais)
-                           normaliza)     ordem da §8)
-                                 ▲
-                           politica.py (limites e constantes da v3)
+despesas.json ─► cli.py ─► entrada.py ─► regras.py ─► saida.py ─► resultado.json
+                 (I/O)     (valida,       (núcleo puro:   (serializa,
+                  │         arredonda,     etapas na       totais)
+                  │         normaliza)     ordem da §8)
+                  │                          ▲      ▲
+politica-v4.json ─┼──────► politica.py ──────┘      │   (carrega/valida tabela,
+cambio.json ──────┴──────► cambio.py ───────────────┘    tabela_para(cc); cotacao(moeda, data))
 ```
 
+*(v1.0: `politica.py` era um módulo de constantes da v3 — ver DT-006.)*
+
 **Fronteiras:** só `cli.py` toca disco e `sys.exit`. `entrada.py`, `regras.py` e
-`saida.py` são funções puras de dados → dados, testáveis sem arquivo. A política
-fica isolada em `politica.py`: o motor pergunta "qual o limite desta categoria",
-não sabe de onde vem o número.
+`saida.py` são funções puras de dados → dados, testáveis sem arquivo. `politica.py`
+e `cambio.py` recebem dicionários já lidos (a CLI lê os arquivos) e devolvem objetos
+validados. O motor pergunta "qual o limite desta categoria" e "qual a cotação desta
+moeda nesta data", sem saber de onde vêm os números.
 
 ## 3. Modelo de dados
 
 - `Despesa` (imutável): `id`, `data: date`, `categoria` (normalizada),
-  `categoria_informada`, `descricao`, `fornecedor`, `valor_informado: Decimal`
-  (cru) e `valor: Decimal` (arredondado, RN-002), `tem_nota_fiscal`.
+  `categoria_informada`, `descricao`, `fornecedor`, `moeda` (normalizada, RN-014),
+  `valor_informado: Decimal` (cru) e `valor: Decimal` (arredondado **na moeda da despesa**,
+  RN-002), `tem_nota_fiscal`.
 - `Entrada`: `colaborador` e `periodo` (dicts repassados), `inicio`, `fim`, `despesas`.
 - `Avaliacao` (mutável, uma por despesa, dentro do motor): `despesa`,
-  `reembolsavel: Decimal`, `encerrada_como: str|None`, `motivos: list[Motivo]`.
+  `valor: Decimal|None` (em BRL; `None` até a conversão — RN-014), `taxa`, `data_cotacao`,
+  `reembolsavel: Decimal`, `encerrada_como: str|None`, `pendente: bool` (RN-016),
+  `motivos: list[Motivo]`.
+- `Politica` (imutável): `versao`, `padrao: {categoria: Limite}`, `centros_custo`,
+  `nota_fiscal_acima_de`, `acrescimo_viagem` (fração: 50% → 0,50); `tabela_para(cc)`
+  devolve `(nome, {categoria: Limite})` já com a herança do padrão (RN-013).
+- `Cambio` (imutável): `{date: {moeda: Decimal}}`; `cotacao(moeda, data)` → `(taxa, data)` ou `None`.
+- `Contexto`: `entrada`, `politica`, `cambio`, `nome_tabela`, `limites` — o que toda etapa recebe.
   O `status` é derivado (RN-012), nunca armazenado separadamente — impossível
   ficar inconsistente com o valor.
 - `Motivo` (imutável): `codigo`, `regra` (ID da RN), `mensagem`.
 
 ## 4. Como a política é representada
 
-Constantes num único módulo `politica.py` (limites por categoria com
-periodicidade `dia`/`diaria`, limiar de nota fiscal, acréscimo de viagem).
-Nenhum outro módulo contém número de política.
+**v2.0:** arquivo JSON externo no formato do financeiro (spec 4.4), lido pela CLI.
+Padrão: `politicas/politica-v4.json` (cópia vigente versionada no repo); outro arquivo
+via `--politica`. Câmbio idem: `politicas/cambio.json` ou `--cambio`.
+O único número de política que continua no código é o limiar de aprovação manual
+(R$ 500,00, RN-016), porque a spec o fixa e a tabela do financeiro não o traz.
 
-Descartado: arquivo de configuração externo. A spec 1.0 não pede política
-variável, e o FAQ alerta contra arquitetura genérica no lugar errado. Se a política
-virar dado externo, só `politica.py` muda de "constante" para "carregado".
+*v1.0 (substituído):* constantes em `politica.py`; arquivo externo tinha sido descartado
+por não haver pedido de política variável. A troca ficou contida em `politica.py` como
+previsto — ver DT-006 e o relatório para o que **não** ficou contido.
 
 ## 5. Decisões técnicas
 
@@ -92,6 +106,31 @@ quebra para regras de agregação.
 **Decisão:** `run.py` na raiz adiciona `src/` ao `sys.path`; `tests/__init__.py` faz o mesmo.
 **Alternativa descartada:** `pyproject.toml` + `pip install -e .` — um passo a mais para quem corrige.
 
+### DT-006 — Política como dado carregado (substitui §4 da v1.0)
+
+**Contexto:** v4 item A: "ler a política de fora, não de dentro do código".
+**Decisão:** `politica.carregar_politica(dict) -> Politica` valida a estrutura (RN-015);
+etapas leem `ctx.limites[categoria]` em vez de `politica.LIMITES`.
+**Alternativa descartada:** manter constantes e gerar um módulo Python a partir do JSON — o financeiro edita o arquivo sem deploy.
+**Consequência:** a v3 vira só mais um arquivo; os testes de regra antigos rodam com o `padrao` da v4, que tem os mesmos números.
+
+### DT-007 — Contexto único para as etapas
+
+**Contexto:** etapas passaram a precisar de política, câmbio e tabela escolhida, além da entrada.
+**Decisão:** `etapa(avaliacoes, ctx)`; o `ctx` é montado uma vez em `avaliar`.
+**Alternativa descartada:** variáveis globais carregadas na importação — impediria testar com tabelas diferentes no mesmo processo.
+
+### DT-008 — Busca de cotação para trás
+
+**Decisão:** `cotacao` tenta a data da despesa e até 7 dias anteriores (`JANELA_DIAS = 7`), na ordem.
+**Alternativa descartada:** índice ordenado + busca binária — a tabela tem dezenas de datas.
+
+### DT-009 — Regressão da v3 como fixture de teste
+
+**Decisão:** `tests/dados/politica-v3.json` (só `padrao`, sem centros de custo) reproduz a v3;
+`test_aceite_exemplo.py` roda a CLI com `--politica` apontando para ele (§9.1).
+**Alternativa descartada:** apagar o aceite v1.0 — perderíamos a prova de que as regras da v3 não regrediram.
+
 ## 6. Estratégia de testes
 
 - **Nível:** ~85% unitário sobre o motor (monta a entrada em memória), um arquivo
@@ -101,7 +140,10 @@ quebra para regras de agregação.
 - **Casos de borda da seção 7:** cada linha da tabela é um método de teste.
 - **Nomenclatura:** `test_rn009_duas_refeicoes_no_mesmo_dia_dividem_o_limite` —
   o prefixo da regra fecha a rastreabilidade; AMB citadas na docstring.
-- **Critérios da §9:** `tests/test_aceite_exemplo.py`, um assert por bullet.
+- **Critérios da §9:** `tests/test_aceite_exemplo.py` (§9.1, tabela v3) e
+  `tests/test_aceite_v4.py` (§9.2–9.4, tabelas vigentes), um assert por bullet.
+- **Tabelas nos testes de regra:** `tests/apoio.py` usa as tabelas vigentes por padrão e aceita
+  tabela/câmbio em memória para casos específicos (`politica=`, `cambio=`).
 
 ## 7. Riscos
 
@@ -111,3 +153,5 @@ quebra para regras de agregação.
 | Ordem das etapas divergir da §8 | média | A lista de etapas é única e comentada com a §8; teste de duplicata sem nota |
 | Mudança de requisito no Dia 2 mexer na política | alta | Política isolada em `politica.py` |
 | Regex de diárias pegar número errado ("Hotel 5 estrelas 2 noites") | baixa | Só aceita número imediatamente seguido de diária/noite |
+| Taxa de câmbio lida como `float` | média | Tabela de câmbio também lida com `parse_float=Decimal` |
+| Arquivo de política padrão não encontrado quando a CLI roda de outra pasta | média | Caminho padrão resolvido a partir do arquivo do pacote, não do diretório atual |
