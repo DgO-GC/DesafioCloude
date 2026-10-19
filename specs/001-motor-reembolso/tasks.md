@@ -39,7 +39,7 @@
   - **Aceite:** `tests/test_rn005_valor_nao_positivo.py` passa
   - **Commit:**
 
-- [ ] **T-006** — Detecção de duplicatas
+- [x] **T-006** — Detecção de duplicatas
   - **Atende:** RN-007, AMB-007
   - **Aceite:** `tests/test_rn007_duplicatas.py` passa
   - **Commit:**

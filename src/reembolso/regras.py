@@ -76,11 +76,34 @@ def categoria_da_politica(avaliacoes, entrada):
                        f"Categoria '{a.despesa.categoria}' não está na política de reembolso.")
 
 
+def duplicatas(avaliacoes, entrada):
+    """RN-007: mesma data, categoria, fornecedor e valor; a primeira na ordem da entrada vale."""
+    originais = {}
+    for a in elegiveis(avaliacoes):
+        d = a.despesa
+        chave = (d.data, d.categoria, d.fornecedor.strip().casefold(), d.valor)
+        if chave in originais:
+            a.encerrar(RECUSADO, "DUPLICATA", "RN-007",
+                       f"Duplicata da despesa {originais[chave]} (mesma data, categoria, fornecedor e valor).")
+        else:
+            originais[chave] = d.id
+
+
+def nota_fiscal(avaliacoes, entrada):
+    """RN-008: acima (estritamente) do limiar exige nota; sem nota, recusa integral."""
+    limiar = politica.NOTA_FISCAL_ACIMA_DE
+    for a in elegiveis(avaliacoes):
+        if a.despesa.valor > limiar and not a.despesa.tem_nota_fiscal:
+            a.encerrar(RECUSADO, "SEM_NOTA_FISCAL", "RN-008",
+                       f"Valor {a.despesa.valor} acima de R$ {limiar} exige nota fiscal.")
+
+
 # Ordem = spec seção 8. Cada etapa recebe a lista inteira (regras de agregação).
 ETAPAS = [
     periodo_de_competencia,    # RN-004
     valor_nao_positivo,        # RN-005
     categoria_da_politica,     # RN-006
+    duplicatas,                # RN-007
 ]
 
 
