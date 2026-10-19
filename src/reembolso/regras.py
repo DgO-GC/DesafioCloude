@@ -60,6 +60,14 @@ def periodo_de_competencia(avaliacoes, entrada):
                        f"Data {a.despesa.data} fora do período {entrada.inicio} a {entrada.fim}.")
 
 
+def valor_nao_positivo(avaliacoes, entrada):
+    """RN-005: estorno ou zero é ignorado e não abate nada."""
+    for a in elegiveis(avaliacoes):
+        if a.despesa.valor <= ZERO:
+            a.encerrar(IGNORADO, "VALOR_NAO_POSITIVO", "RN-005",
+                       f"Valor {a.despesa.valor} não é positivo (estorno ou zero); não abate outras despesas.")
+
+
 def categoria_da_politica(avaliacoes, entrada):
     """RN-006: só categorias com limite definido na política."""
     for a in elegiveis(avaliacoes):
@@ -71,6 +79,7 @@ def categoria_da_politica(avaliacoes, entrada):
 # Ordem = spec seção 8. Cada etapa recebe a lista inteira (regras de agregação).
 ETAPAS = [
     periodo_de_competencia,    # RN-004
+    valor_nao_positivo,        # RN-005
     categoria_da_politica,     # RN-006
 ]
 

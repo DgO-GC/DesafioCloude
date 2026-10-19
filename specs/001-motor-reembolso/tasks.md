@@ -34,7 +34,7 @@
   - **Aceite:** `tests/test_rn004_competencia.py` passa
   - **Commit:**
 
-- [ ] **T-005** — Valor não positivo é ignorado
+- [x] **T-005** — Valor não positivo é ignorado
   - **Atende:** RN-005, AMB-009
   - **Aceite:** `tests/test_rn005_valor_nao_positivo.py` passa
   - **Commit:**
