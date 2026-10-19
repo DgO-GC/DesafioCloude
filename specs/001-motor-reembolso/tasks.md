@@ -12,7 +12,7 @@
 
 ## Fase 1 — Fundação
 
-- [ ] **T-001** — Esqueleto: CLI `calcular`, leitura e validação da entrada, saída com itens e totais sem regras
+- [x] **T-001** — Esqueleto: CLI `calcular`, leitura e validação da entrada, saída com itens e totais sem regras
   - **Atende:** RN-001, seção 4
   - **Aceite:** `tests/test_rn001_validacao.py` passa; `python run.py calcular --input exemplos/despesas-exemplo.json --output /tmp/x.json` gera arquivo
   - **Commit:**
