@@ -97,7 +97,7 @@
   - **Aceite:** `tests/test_rn013_centro_custo.py` passa
   - **Commit:**
 
-- [ ] **T-016** — Limites, limiar de nota e acréscimo vindos da tabela, por periodicidade
+- [x] **T-016** — Limites, limiar de nota e acréscimo vindos da tabela, por periodicidade
   - **Atende:** RN-008, RN-009, RN-010, RN-011 (acréscimo), AMB-025; refaz T-007..T-010
   - **Aceite:** `tests/test_rn016_periodicidade_da_tabela.py` passa
   - **Commit:**
