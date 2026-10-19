@@ -48,12 +48,13 @@ def politica(centros_custo=None, **campos) -> dict:
     return base
 
 
-def rodar(*despesas, politica=None, centro_custo="CC-TESTE", **periodo) -> dict:
-    """Retorna a saída completa. politica=None usa a tabela vigente (politicas/politica-v4.json)."""
+def rodar(*despesas, politica=None, cambio=None, centro_custo="CC-TESTE", **periodo) -> dict:
+    """Retorna a saída completa. politica/cambio=None usam as tabelas vigentes de politicas/."""
     dados = entrada(*despesas, **periodo)
     dados["colaborador"]["centro_custo"] = centro_custo
     texto_politica = None if politica is None else json.dumps(politica)
-    return calcular(json.dumps(dados), texto_politica)
+    texto_cambio = None if cambio is None else json.dumps(cambio)
+    return calcular(json.dumps(dados), texto_politica, texto_cambio)
 
 
 def itens(*despesas, **opcoes) -> dict:

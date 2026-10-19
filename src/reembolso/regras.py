@@ -5,8 +5,9 @@ from dataclasses import dataclass, field
 from datetime import timedelta
 from decimal import Decimal
 
-from . import politica
+from . import cambio, politica
 from .dinheiro import ZERO, arredondar
+from .cambio import BRL, Cambio
 from .entrada import Despesa, Entrada
 from .politica import Politica
 
@@ -27,7 +28,10 @@ class Motivo:
 @dataclass
 class Avaliacao:
     despesa: Despesa
+    valor: Decimal | None       # valor considerado em BRL; None = sem cotação (RN-014)
     reembolsavel: Decimal
+    taxa: Decimal | None = None
+    data_cotacao: object = None
     encerrada_como: str | None = None
     motivos: list = field(default_factory=list)
 
@@ -45,7 +49,7 @@ class Avaliacao:
         """RN-012: status derivado do encerramento e do valor (plan.md DT-002)."""
         if self.encerrada_como:
             return self.encerrada_como
-        if self.reembolsavel == self.despesa.valor:
+        if self.reembolsavel == self.valor:
             return APROVADO
         if self.reembolsavel == ZERO:
             return RECUSADO
@@ -57,13 +61,27 @@ class Contexto:
     """O que toda etapa enxerga (plan.md DT-007)."""
     entrada: Entrada
     politica: Politica
+    cambio: Cambio
     nome_tabela: str
     limites: dict
 
 
-def montar_contexto(entrada: Entrada, pol: Politica) -> Contexto:
+def montar_contexto(entrada: Entrada, pol: Politica, cambio: Cambio) -> Contexto:
     nome, limites = pol.tabela_para(entrada.colaborador.get("centro_custo"))
-    return Contexto(entrada, pol, nome, limites)
+    return Contexto(entrada, pol, cambio, nome, limites)
+
+
+def avaliacao_inicial(d: Despesa, cambio: Cambio) -> Avaliacao:
+    """RN-014: BRL não converte; demais moedas convertem já aqui para que o valor apareça na saída
+    mesmo se uma regra anterior recusar o item. A recusa por falta de cotação é a etapa da seção 8."""
+    if d.moeda == BRL:
+        return Avaliacao(d, d.valor, d.valor)
+    cotacao = cambio.cotacao(d.moeda, d.data)
+    if cotacao is None:
+        return Avaliacao(d, None, ZERO)
+    taxa, dia = cotacao
+    valor = arredondar(d.valor_informado * taxa)  # AMB-022: arredonda só o produto
+    return Avaliacao(d, valor, valor, taxa, dia)
 
 
 def elegiveis(avaliacoes):
@@ -104,7 +122,7 @@ def duplicatas(avaliacoes, ctx):
     originais = {}
     for a in elegiveis(avaliacoes):
         d = a.despesa
-        chave = (d.data, d.categoria, d.fornecedor.strip().casefold(), d.valor)
+        chave = (d.data, d.categoria, d.fornecedor.strip().casefold(), d.moeda, d.valor)  # AMB-028
         if chave in originais:
             a.encerrar(RECUSADO, "DUPLICATA", "RN-007",
                        f"Duplicata da despesa {originais[chave]} (mesma data, categoria, fornecedor e valor).")
@@ -112,13 +130,22 @@ def duplicatas(avaliacoes, ctx):
             originais[chave] = d.id
 
 
+def conversao_cambial(avaliacoes, ctx):
+    """RN-014: sem cotação aplicável, recusa."""
+    for a in elegiveis(avaliacoes):
+        if a.valor is None:
+            a.encerrar(RECUSADO, "MOEDA_SEM_COTACAO", "RN-014",
+                       f"Sem cotação de {a.despesa.moeda} em {a.despesa.data} nem nos "
+                       f"{cambio.JANELA_DIAS} dias anteriores.")
+
+
 def nota_fiscal(avaliacoes, ctx):
-    """RN-008: acima (estritamente) do limiar da tabela exige nota; sem nota, recusa integral."""
+    """RN-008: acima (estritamente) do limiar da tabela, em BRL, exige nota; sem nota, recusa integral."""
     limiar = ctx.politica.nota_fiscal_acima_de
     for a in elegiveis(avaliacoes):
-        if a.despesa.valor > limiar and not a.despesa.tem_nota_fiscal:
+        if a.valor > limiar and not a.despesa.tem_nota_fiscal:
             a.encerrar(RECUSADO, "SEM_NOTA_FISCAL", "RN-008",
-                       f"Valor {a.despesa.valor} acima de R$ {limiar} exige nota fiscal.")
+                       f"Valor R$ {a.valor} acima de R$ {limiar} exige nota fiscal.")
 
 
 NOMES = {"alimentacao": "alimentação", "transporte_urbano": "transporte urbano", "hospedagem": "hospedagem"}
@@ -149,14 +176,14 @@ def limite_diario(avaliacoes, ctx):
         teto = arredondar(limite.valor * (1 + acrescimo)) if em_viagem else limite.valor
         chave = (d.data, d.categoria)
         saldo = saldos.get(chave, teto)
-        concedido = min(d.valor, saldo)
-        if concedido < d.valor:
+        concedido = min(a.valor, saldo)
+        if concedido < a.valor:
             a.reembolsavel = concedido
             a.motivos.append(Motivo(
                 "LIMITE_DIARIO", "RN-009",
                 f"Limite diário de {NOMES.get(d.categoria, d.categoria)} em {d.data}"
                 f"{f' (em viagem, +{acrescimo * 100:g}%)' if em_viagem else ''} é R$ {teto}; "
-                f"restavam R$ {saldo}. Glosados R$ {d.valor - concedido}."))
+                f"restavam R$ {saldo}. Glosados R$ {a.valor - concedido}."))
         saldos[chave] = saldo - concedido
 
 
@@ -179,12 +206,12 @@ def limite_hospedagem(avaliacoes, ctx):
             continue
         n = diarias(d.descricao)
         teto = limite.valor * n
-        if d.valor > teto:
+        if a.valor > teto:
             a.reembolsavel = teto
             a.motivos.append(Motivo(
                 "LIMITE_HOSPEDAGEM", "RN-010",
                 f"Limite de hospedagem é R$ {limite.valor} por diária × {n} diária(s) = R$ {teto}. "
-                f"Glosados R$ {d.valor - teto}."))
+                f"Glosados R$ {a.valor - teto}."))
 
 
 # Ordem = spec seção 8. Cada etapa recebe a lista inteira (regras de agregação).
@@ -193,6 +220,7 @@ ETAPAS = [
     valor_nao_positivo,        # RN-005
     categoria_da_politica,     # RN-006
     duplicatas,                # RN-007
+    conversao_cambial,         # RN-014
     nota_fiscal,               # RN-008
     limite_diario,             # RN-009
     limite_hospedagem,         # RN-010
@@ -200,7 +228,7 @@ ETAPAS = [
 
 
 def avaliar(ctx: Contexto) -> list:
-    avaliacoes = [Avaliacao(d, d.valor) for d in ctx.entrada.despesas]
+    avaliacoes = [avaliacao_inicial(d, ctx.cambio) for d in ctx.entrada.despesas]
     for etapa in ETAPAS:
         etapa(avaliacoes, ctx)
     return avaliacoes

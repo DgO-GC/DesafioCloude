@@ -62,5 +62,26 @@ class TestRN015Politica(unittest.TestCase):
         self.assertEqual(len(calcular_com(copy.deepcopy(pol))["itens"]), 1)
 
 
+class TestRN015Cambio(unittest.TestCase):
+    def assertInvalido(self, cambio, trecho):
+        with self.assertRaises(EntradaInvalida) as ctx:
+            calcular(json.dumps(entrada(despesa())), None, json.dumps(cambio))
+        self.assertIn("tabela de câmbio", str(ctx.exception))
+        self.assertIn(trecho, str(ctx.exception))
+
+    def test_rn015_cambio_moeda_base_diferente_de_brl(self):
+        self.assertInvalido({"moeda_base": "USD", "taxas": {}}, "moeda_base")
+
+    def test_rn015_cambio_sem_taxas(self):
+        self.assertInvalido({"moeda_base": "BRL"}, "taxas")
+
+    def test_rn015_cambio_data_invalida(self):
+        self.assertInvalido({"moeda_base": "BRL", "taxas": {"13/07/2026": {"USD": 5}}}, "13/07/2026")
+
+    def test_rn015_cambio_taxa_zero_ou_texto(self):
+        self.assertInvalido({"moeda_base": "BRL", "taxas": {"2026-07-13": {"USD": 0}}}, "USD")
+        self.assertInvalido({"moeda_base": "BRL", "taxas": {"2026-07-13": {"USD": "5.4"}}}, "USD")
+
+
 if __name__ == "__main__":
     unittest.main()

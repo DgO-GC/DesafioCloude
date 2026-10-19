@@ -24,8 +24,8 @@ class TestRN012StatusTotais(unittest.TestCase):
             "valor_solicitado": "110.50", "valor_reembolsavel": "60.00", "valor_glosado": "50.50",
             "itens_por_status": {"aprovado": 0, "parcial": 1, "recusado": 1, "ignorado": 0}})
         self.assertEqual(saida["itens"][1], {
-            "id": "a-2", "data": "2026-07-03", "categoria": "alimentacao",
-            "valor_informado": "38.00", "valor_considerado": "38.00", "valor_reembolsavel": "0.00",
+            "id": "a-2", "data": "2026-07-03", "categoria": "alimentacao", "moeda": "BRL",
+            "valor_informado": "38.00", "taxa_cambio": None, "data_cotacao": None, "valor_considerado": "38.00", "valor_reembolsavel": "0.00",
             "status": "recusado",
             "motivos": [{"codigo": "LIMITE_DIARIO", "regra": "RN-009",
                          "mensagem": "Limite diário de alimentação em 2026-07-03 é R$ 60.00; restavam R$ 0.00. Glosados R$ 38.00."}]})

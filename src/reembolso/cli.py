@@ -4,6 +4,7 @@ import json
 import sys
 from pathlib import Path
 
+from .cambio import carregar_cambio
 from .entrada import EntradaInvalida, carregar_json, ler_entrada
 from .politica import carregar_politica
 from .regras import avaliar, montar_contexto
@@ -13,14 +14,18 @@ OK, ERRO_ENTRADA = 0, 1
 # Cópias vigentes versionadas no repo; resolvidas a partir do pacote, não do diretório atual.
 POLITICAS = Path(__file__).resolve().parents[2] / "politicas"
 POLITICA_PADRAO = POLITICAS / "politica-v4.json"
+CAMBIO_PADRAO = POLITICAS / "cambio.json"
 
 
-def calcular(texto_entrada: str, texto_politica: str | None = None) -> dict:
+def calcular(texto_entrada: str, texto_politica: str | None = None, texto_cambio: str | None = None) -> dict:
     if texto_politica is None:
         texto_politica = POLITICA_PADRAO.read_text(encoding="utf-8")
+    if texto_cambio is None:
+        texto_cambio = CAMBIO_PADRAO.read_text(encoding="utf-8")
     pol = carregar_politica(carregar_json(texto_politica))
+    cambio = carregar_cambio(carregar_json(texto_cambio))
     entrada = ler_entrada(carregar_json(texto_entrada))
-    ctx = montar_contexto(entrada, pol)
+    ctx = montar_contexto(entrada, pol, cambio)
     return montar_saida(ctx, avaliar(ctx))
 
 
@@ -34,12 +39,15 @@ def main(argv=None) -> int:
     cmd.add_argument("--output", required=True, type=Path, help="JSON de resultado")
     cmd.add_argument("--politica", type=Path, default=POLITICA_PADRAO,
                      help=f"tabela de política (padrão: {POLITICA_PADRAO.name})")
+    cmd.add_argument("--cambio", type=Path, default=CAMBIO_PADRAO,
+                     help=f"tabela de câmbio (padrão: {CAMBIO_PADRAO.name})")
     args = parser.parse_args(argv)
 
     try:
         texto = args.input.read_text(encoding="utf-8")
         texto_politica = args.politica.read_text(encoding="utf-8")
-        resultado = calcular(texto, texto_politica)
+        texto_cambio = args.cambio.read_text(encoding="utf-8")
+        resultado = calcular(texto, texto_politica, texto_cambio)
     except OSError as erro:
         print(f"erro: não foi possível ler {erro.filename}: {erro.strerror}", file=sys.stderr)
         return ERRO_ENTRADA

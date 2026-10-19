@@ -102,7 +102,7 @@
   - **Aceite:** `tests/test_rn016_periodicidade_da_tabela.py` passa
   - **Commit:**
 
-- [ ] **T-017** — Campo `moeda`, tabela de câmbio e conversão para BRL pela cotação da data
+- [x] **T-017** — Campo `moeda`, tabela de câmbio e conversão para BRL pela cotação da data
   - **Atende:** RN-014, RN-015 (câmbio), RN-007 (chave com moeda), AMB-020..AMB-023, AMB-028, AMB-029
   - **Aceite:** `tests/test_rn014_cambio.py` e casos de câmbio de `test_rn015_tabelas.py` passam
   - **Commit:**

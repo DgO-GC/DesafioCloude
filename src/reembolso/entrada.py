@@ -19,8 +19,9 @@ class Despesa:
     categoria_informada: str
     descricao: str
     fornecedor: str
+    moeda: str
     valor_informado: Decimal
-    valor: Decimal
+    valor: Decimal  # arredondado, na moeda da despesa
     tem_nota_fiscal: bool
 
 
@@ -78,6 +79,7 @@ def _despesa(bruta, posicao: int) -> Despesa:
         categoria_informada=categoria,
         descricao=_texto_opcional(bruta, "descricao", onde),
         fornecedor=_texto_opcional(bruta, "fornecedor", onde),
+        moeda=normalizar_moeda(_texto_opcional(bruta, "moeda", onde)),
         valor_informado=valor,
         valor=arredondar(valor),
         tem_nota_fiscal=nota,
@@ -87,6 +89,11 @@ def _despesa(bruta, posicao: int) -> Despesa:
 def normalizar_categoria(categoria: str) -> str:
     """RN-003: sem espaços nas pontas e em minúsculas; acentos e grafia preservados."""
     return categoria.strip().lower()
+
+
+def normalizar_moeda(moeda: str) -> str:
+    """RN-014 / AMB-029: sem espaços, maiúsculas; vazio = BRL."""
+    return moeda.strip().upper() or "BRL"
 
 
 def _objeto(dados: dict, campo: str, onde: str) -> dict:
