@@ -104,6 +104,7 @@ ETAPAS = [
     valor_nao_positivo,        # RN-005
     categoria_da_politica,     # RN-006
     duplicatas,                # RN-007
+    nota_fiscal,               # RN-008
 ]
 
 

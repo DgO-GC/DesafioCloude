@@ -44,7 +44,7 @@
   - **Aceite:** `tests/test_rn007_duplicatas.py` passa
   - **Commit:**
 
-- [ ] **T-007** — Nota fiscal obrigatória acima de 100,00
+- [x] **T-007** — Nota fiscal obrigatória acima de 100,00
   - **Atende:** RN-008, AMB-004
   - **Aceite:** `tests/test_rn008_nota_fiscal.py` passa
   - **Commit:**
