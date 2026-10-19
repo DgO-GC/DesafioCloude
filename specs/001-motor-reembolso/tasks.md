@@ -122,7 +122,7 @@
   - **Aceite:** `tests/test_aceite_exemplo.py` (com tabela v3) e `tests/test_aceite_v4.py` passam
   - **Commit:**
 
-- [ ] **T-021** — README e CLAUDE.md para a v4
+- [x] **T-021** — README e CLAUDE.md para a v4
   - **Atende:** entrega
   - **Aceite:** README mostra como rodar com tabela/câmbio padrão e alternativos; comandos conferidos numa pasta limpa
   - **Commit:**

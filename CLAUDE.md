@@ -40,11 +40,19 @@ Se o que eu pedi não está coberto por nenhuma task, me avise em vez de impleme
 - Pipeline em `src/reembolso/regras.py`: a lista `ETAPAS` é a seção 8 da spec, na mesma ordem.
   Toda etapa tem docstring que começa com o ID da regra (`"""RN-009: ...`).
 - Todo motivo carrega `codigo` estável + `regra` (ID da RN). Código novo → tabela da RN-012.
-- Números de política só em `politica.py`.
+- Números de política só nas tabelas de `politicas/*.json` (o financeiro edita). Única exceção:
+  o limiar de aprovação manual (R$ 500, RN-016) em `politica.py`, porque a spec o fixa.
+- Testes de regra usam as tabelas vigentes por padrão; tabela/câmbio específicos via
+  `tests/apoio.politica(...)` e `rodar(..., politica=, cambio=)`. A v3 vive em `tests/dados/politica-v3.json`.
+- Cuidado ao escrever teste: hospedagem ou moeda estrangeira no mesmo dia tornam o dia "em viagem"
+  (RN-011) e mudam o limite; outra despesa da mesma categoria no mesmo dia consome o saldo (RN-009).
 - Erro de entrada → `EntradaInvalida` com o id da despesa; só `cli.py` decide código de saída.
 - Testes: `tests/test_rnNNN_<nome>.py`, métodos `test_rnNNN_<comportamento>`; montar entrada com `tests/apoio.py`.
 - Valores monetários: `decimal.Decimal`, JSON lido com `parse_float=Decimal`; **nunca `float`**.
-  Arredondamento só na entrada (`dinheiro.arredondar`); saída sempre texto com 2 casas.
+  Arredondamento uma única vez: na entrada (BRL) ou no produto da conversão (moeda estrangeira);
+  saída sempre texto com 2 casas.
+- Arquivos: gravar sempre com LF (`.gitattributes`); no Windows, `Path.write_text` grava CRLF —
+  usar `newline="\n"` ou `write_bytes`.
 
 ## Fora de escopo
 
