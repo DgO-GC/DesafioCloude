@@ -1,4 +1,6 @@
 """Núcleo do motor: aplica as regras da spec na ordem da seção 8 (plan.md DT-001)."""
+import re
+import unicodedata
 from dataclasses import dataclass, field
 from decimal import Decimal
 
@@ -122,6 +124,33 @@ def limite_diario(avaliacoes, entrada):
         saldos[chave] = saldo - concedido
 
 
+_DIARIAS = re.compile(r"(\d+)\s*(?:diarias?|noites?)\b")
+
+
+def diarias(descricao: str) -> int:
+    """RN-010: 'N diária(s)/noite(s)' na descrição, com ou sem acento; senão (ou zero), 1 (plan.md DT-004)."""
+    sem_acento = unicodedata.normalize("NFKD", descricao).encode("ascii", "ignore").decode().lower()
+    achado = _DIARIAS.search(sem_acento)
+    return max(int(achado.group(1)), 1) if achado else 1
+
+
+def limite_hospedagem(avaliacoes, entrada):
+    """RN-010: limite por diária, cada hospedagem limitada sozinha."""
+    for a in elegiveis(avaliacoes):
+        d = a.despesa
+        limite = politica.LIMITES[d.categoria]
+        if limite.periodicidade != politica.DIARIA:
+            continue
+        n = diarias(d.descricao)
+        teto = limite.valor * n
+        if d.valor > teto:
+            a.reembolsavel = teto
+            a.motivos.append(Motivo(
+                "LIMITE_HOSPEDAGEM", "RN-010",
+                f"Limite de hospedagem é R$ {limite.valor} por diária × {n} diária(s) = R$ {teto}. "
+                f"Glosados R$ {d.valor - teto}."))
+
+
 # Ordem = spec seção 8. Cada etapa recebe a lista inteira (regras de agregação).
 ETAPAS = [
     periodo_de_competencia,    # RN-004
@@ -130,6 +159,7 @@ ETAPAS = [
     duplicatas,                # RN-007
     nota_fiscal,               # RN-008
     limite_diario,             # RN-009
+    limite_hospedagem,         # RN-010
 ]
 
 

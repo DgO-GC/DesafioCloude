@@ -56,7 +56,7 @@
   - **Aceite:** `tests/test_rn009_limite_diario.py` passa
   - **Commit:**
 
-- [ ] **T-009** — Limite de hospedagem por diária
+- [x] **T-009** — Limite de hospedagem por diária
   - **Atende:** RN-010, AMB-006
   - **Aceite:** `tests/test_rn010_hospedagem.py` passa
   - **Commit:**
