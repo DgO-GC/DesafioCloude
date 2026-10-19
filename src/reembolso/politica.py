@@ -25,7 +25,9 @@ class Politica:
     acrescimo_viagem: Decimal  # fração: 50% -> 0.50
 
     def tabela_para(self, centro_custo) -> tuple:
-        """RN-013: (nome da tabela, {categoria: Limite})."""
+        """RN-013: (nome da tabela, {categoria: Limite}); o centro de custo substitui/acrescenta ao padrão."""
+        if isinstance(centro_custo, str) and centro_custo in self.centros_custo:
+            return centro_custo, {**self.padrao, **self.centros_custo[centro_custo]}
         return PADRAO, dict(self.padrao)
 
 

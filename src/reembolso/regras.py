@@ -90,9 +90,13 @@ def valor_nao_positivo(avaliacoes, ctx):
 def categoria_da_politica(avaliacoes, ctx):
     """RN-006: só categorias com limite na tabela aplicável."""
     for a in elegiveis(avaliacoes):
-        if a.despesa.categoria not in ctx.limites:
+        categoria = a.despesa.categoria
+        if categoria not in ctx.limites:
             a.encerrar(RECUSADO, "CATEGORIA_NAO_REEMBOLSAVEL", "RN-006",
-                       f"Categoria '{a.despesa.categoria}' não está na política de reembolso.")
+                       f"Categoria '{categoria}' não está na política de reembolso (tabela {ctx.nome_tabela}).")
+        elif ctx.limites[categoria].valor == ZERO:
+            a.encerrar(RECUSADO, "CATEGORIA_BLOQUEADA_NO_CENTRO_CUSTO", "RN-006",
+                       f"Categoria '{categoria}' não é reembolsável na tabela {ctx.nome_tabela} (limite 0,00).")
 
 
 def duplicatas(avaliacoes, ctx):

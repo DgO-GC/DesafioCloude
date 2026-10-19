@@ -92,7 +92,7 @@
   - **Aceite:** `tests/test_rn015_tabelas.py` (casos de política) passa; testes T-001..T-013 continuam passando
   - **Commit:**
 
-- [ ] **T-015** — Tabela de limites por centro de custo com herança do padrão e limite 0
+- [x] **T-015** — Tabela de limites por centro de custo com herança do padrão e limite 0
   - **Atende:** RN-013, RN-006, AMB-016, AMB-017, AMB-018, AMB-019; refaz T-003
   - **Aceite:** `tests/test_rn013_centro_custo.py` passa
   - **Commit:**

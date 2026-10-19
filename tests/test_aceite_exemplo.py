@@ -1,4 +1,4 @@
-"""Spec seção 9 — critérios de aceite sobre exemplos/despesas-exemplo.json, via CLI real."""
+"""Spec §9.1 — regressão da v3: exemplos/despesas-exemplo.json com a tabela v3 (plan.md DT-009), via CLI real."""
 import json
 import os
 import subprocess
@@ -9,13 +9,15 @@ from pathlib import Path
 
 RAIZ = Path(__file__).resolve().parent.parent
 EXEMPLO = RAIZ / "exemplos" / "despesas-exemplo.json"
+POLITICA_V3 = RAIZ / "tests" / "dados" / "politica-v3.json"
 
 
-def rodar_cli(arquivo: Path) -> dict:
+def rodar_cli(arquivo: Path, *opcoes: str) -> dict:
     with tempfile.TemporaryDirectory() as pasta:
         saida = Path(pasta, "resultado.json")
         proc = subprocess.run(
-            [sys.executable, str(RAIZ / "run.py"), "calcular", "--input", str(arquivo), "--output", str(saida)],
+            [sys.executable, str(RAIZ / "run.py"), "calcular", "--input", str(arquivo), "--output", str(saida),
+             *opcoes],
             capture_output=True, text=True, encoding="utf-8", env={**os.environ, "PYTHONIOENCODING": "utf-8"})
         assert proc.returncode == 0, proc.stderr
         return json.loads(saida.read_text(encoding="utf-8"))
@@ -24,7 +26,7 @@ def rodar_cli(arquivo: Path) -> dict:
 class TestAceiteExemplo(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.saida = rodar_cli(EXEMPLO)
+        cls.saida = rodar_cli(EXEMPLO, "--politica", str(POLITICA_V3))
         cls.itens = {i["id"]: i for i in cls.saida["itens"]}
 
     def assertItem(self, id_, status, reembolsavel=None, codigo=None):
@@ -92,7 +94,7 @@ class TestAceiteExemplo(unittest.TestCase):
                 self.assertRegex(item[campo], r"^-?\d+\.\d{2}$")
 
     def test_aceite_execucao_deterministica(self):
-        self.assertEqual(rodar_cli(EXEMPLO), self.saida)
+        self.assertEqual(rodar_cli(EXEMPLO, "--politica", str(POLITICA_V3)), self.saida)
 
 
 if __name__ == "__main__":
