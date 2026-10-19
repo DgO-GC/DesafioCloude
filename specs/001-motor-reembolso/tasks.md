@@ -107,7 +107,7 @@
   - **Aceite:** `tests/test_rn014_cambio.py` e casos de câmbio de `test_rn015_tabelas.py` passam
   - **Commit:**
 
-- [ ] **T-018** — Despesa em moeda estrangeira caracteriza dia em viagem
+- [x] **T-018** — Despesa em moeda estrangeira caracteriza dia em viagem
   - **Atende:** RN-011, AMB-024; refaz T-010
   - **Aceite:** casos `test_rn011_moeda_*` em `tests/test_rn011_viagem.py` passam
   - **Commit:**

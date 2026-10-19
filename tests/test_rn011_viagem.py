@@ -54,6 +54,30 @@ class TestRN011Viagem(unittest.TestCase):
         r = itens(hotel(descricao="Pousada", valor=300))
         self.assertEqual(r["h"]["valor_reembolsavel"], "250.00")
 
+    def test_rn011_moeda_estrangeira_torna_o_dia_viagem(self):
+        """AMB-024: táxi em EUR em 14/07 → refeição em BRL no mesmo dia tem limite 90.
+        (Categoria diferente de propósito: outra alimentação consumiria o saldo do dia.)"""
+        r = itens(despesa(id="e", data="2026-07-14", valor=5, moeda="EUR", categoria="transporte_urbano"),
+                  alim("a", "2026-07-14", 85))
+        self.assertEqual(r["a"]["status"], "aprovado")
+
+    def test_rn011_moeda_estrangeira_nao_estende_para_dias_vizinhos(self):
+        r = itens(despesa(id="e", data="2026-07-14", valor=5, moeda="EUR"), alim("a", "2026-07-15", 85))
+        self.assertEqual(r["a"]["valor_reembolsavel"], "60.00")
+
+    def test_rn011_moeda_limite_compara_valor_convertido_em_viagem(self):
+        """30 EUR em 17/07 = 178,80 BRL; o próprio item faz do dia viagem: CC-COMERCIAL 90 × 1,5 = 135."""
+        r = itens(despesa(id="e", data="2026-07-17", valor=30, moeda="EUR"), centro_custo="CC-COMERCIAL")
+        self.assertEqual(r["e"]["valor_reembolsavel"], "135.00")
+
+    def test_rn011_moeda_estrangeira_sem_cotacao_ainda_caracteriza_viagem(self):
+        r = itens(despesa(id="g", data="2026-07-21", valor=55, moeda="GBP"), alim("a", "2026-07-21", 85))
+        self.assertEqual(r["a"]["status"], "aprovado")
+
+    def test_rn011_moeda_estorno_nao_caracteriza_viagem(self):
+        r = itens(despesa(id="e", data="2026-07-14", valor=-5, moeda="EUR"), alim("a", "2026-07-14", 85))
+        self.assertEqual(r["a"]["valor_reembolsavel"], "60.00")
+
     def test_rn011_sem_hospedagem_nao_ha_viagem(self):
         r = itens(alim("a", "2026-07-15", 85))
         self.assertEqual(r["a"]["valor_reembolsavel"], "60.00")
