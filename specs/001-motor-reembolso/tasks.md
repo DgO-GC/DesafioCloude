@@ -29,7 +29,7 @@
 
 ## Fase 2 — Regras de elegibilidade
 
-- [ ] **T-004** — Período de competência inclusivo
+- [x] **T-004** — Período de competência inclusivo
   - **Atende:** RN-004, AMB-008
   - **Aceite:** `tests/test_rn004_competencia.py` passa
   - **Commit:**

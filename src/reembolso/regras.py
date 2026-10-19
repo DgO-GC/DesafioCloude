@@ -52,6 +52,14 @@ def elegiveis(avaliacoes):
     return [a for a in avaliacoes if a.elegivel]
 
 
+def periodo_de_competencia(avaliacoes, entrada):
+    """RN-004: data da despesa dentro de [inicio, fim], inclusivo."""
+    for a in elegiveis(avaliacoes):
+        if not entrada.inicio <= a.despesa.data <= entrada.fim:
+            a.encerrar(RECUSADO, "FORA_DA_COMPETENCIA", "RN-004",
+                       f"Data {a.despesa.data} fora do período {entrada.inicio} a {entrada.fim}.")
+
+
 def categoria_da_politica(avaliacoes, entrada):
     """RN-006: só categorias com limite definido na política."""
     for a in elegiveis(avaliacoes):
@@ -62,6 +70,7 @@ def categoria_da_politica(avaliacoes, entrada):
 
 # Ordem = spec seção 8. Cada etapa recebe a lista inteira (regras de agregação).
 ETAPAS = [
+    periodo_de_competencia,    # RN-004
     categoria_da_politica,     # RN-006
 ]
 
