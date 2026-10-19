@@ -129,7 +129,7 @@
 
 ## Fase 6 — Fechamento
 
-- [ ] **T-022** — Relatório final e sessões exportadas
+- [x] **T-022** — Relatório final e sessões exportadas
   - **Atende:** entrega (`docs/RELATORIO.md`, `docs/sessions/`)
   - **Aceite:** os 5 blocos do relatório citam commits/arquivos; `docs/sessions/` tem o export da sessão
   - **Commit:** `8388d52`
