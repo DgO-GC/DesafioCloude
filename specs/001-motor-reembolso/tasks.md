@@ -61,7 +61,7 @@
   - **Aceite:** `tests/test_rn010_hospedagem.py` passa
   - **Commit:**
 
-- [ ] **T-010** — Dias em viagem ampliam limites diários
+- [x] **T-010** — Dias em viagem ampliam limites diários
   - **Atende:** RN-011, AMB-005, AMB-013
   - **Aceite:** `tests/test_rn011_viagem.py` passa
   - **Commit:**

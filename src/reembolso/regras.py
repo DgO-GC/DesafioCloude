@@ -2,10 +2,11 @@
 import re
 import unicodedata
 from dataclasses import dataclass, field
+from datetime import timedelta
 from decimal import Decimal
 
 from . import politica
-from .dinheiro import ZERO
+from .dinheiro import ZERO, arredondar
 from .entrada import Despesa, Entrada
 
 APROVADO = "aprovado"
@@ -103,15 +104,27 @@ def nota_fiscal(avaliacoes, entrada):
 NOMES = {"alimentacao": "alimentação", "transporte_urbano": "transporte urbano", "hospedagem": "hospedagem"}
 
 
+def dias_em_viagem(avaliacoes, entrada) -> set:
+    """RN-011: dias D..D+N cobertos por hospedagem positiva no período, mesmo se ela for recusada."""
+    dias = set()
+    for a in avaliacoes:
+        d = a.despesa
+        if d.categoria == "hospedagem" and d.valor > ZERO and entrada.inicio <= d.data <= entrada.fim:
+            dias.update(d.data + timedelta(days=i) for i in range(diarias(d.descricao) + 1))
+    return dias
+
+
 def limite_diario(avaliacoes, entrada):
-    """RN-009: limite da soma do dia por categoria, saldo consumido na ordem da entrada."""
+    """RN-009 + RN-011: limite da soma do dia por categoria, saldo consumido na ordem da entrada."""
+    viagem = dias_em_viagem(avaliacoes, entrada)
     saldos = {}
     for a in elegiveis(avaliacoes):
         d = a.despesa
         limite = politica.LIMITES[d.categoria]
         if limite.periodicidade != politica.DIA:
             continue
-        teto = limite.valor
+        em_viagem = d.data in viagem
+        teto = arredondar(limite.valor * (1 + politica.ACRESCIMO_VIAGEM)) if em_viagem else limite.valor
         chave = (d.data, d.categoria)
         saldo = saldos.get(chave, teto)
         concedido = min(d.valor, saldo)
@@ -119,7 +132,8 @@ def limite_diario(avaliacoes, entrada):
             a.reembolsavel = concedido
             a.motivos.append(Motivo(
                 "LIMITE_DIARIO", "RN-009",
-                f"Limite diário de {NOMES.get(d.categoria, d.categoria)} em {d.data} é R$ {teto}; "
+                f"Limite diário de {NOMES.get(d.categoria, d.categoria)} em {d.data}"
+                f"{' (em viagem, +50%)' if em_viagem else ''} é R$ {teto}; "
                 f"restavam R$ {saldo}. Glosados R$ {d.valor - concedido}."))
         saldos[chave] = saldo - concedido
 
