@@ -15,73 +15,73 @@
 - [x] **T-001** — Esqueleto: CLI `calcular`, leitura e validação da entrada, saída com itens e totais sem regras
   - **Atende:** RN-001, seção 4
   - **Aceite:** `tests/test_rn001_validacao.py` passa; `python run.py calcular --input exemplos/despesas-exemplo.json --output /tmp/x.json` gera arquivo
-  - **Commit:**
+  - **Commit:** `e22e2cb`
 
 - [x] **T-002** — Arredondamento monetário na entrada
   - **Atende:** RN-002, AMB-010
   - **Aceite:** `tests/test_rn002_arredondamento.py` passa
-  - **Commit:**
+  - **Commit:** `edadc57`
 
 - [x] **T-003** — Normalização de categoria e categorias da política
   - **Atende:** RN-003, RN-006, AMB-011, AMB-012
   - **Aceite:** `tests/test_rn003_rn006_categoria.py` passa
-  - **Commit:**
+  - **Commit:** `ec7e08e`
 
 ## Fase 2 — Regras de elegibilidade
 
 - [x] **T-004** — Período de competência inclusivo
   - **Atende:** RN-004, AMB-008
   - **Aceite:** `tests/test_rn004_competencia.py` passa
-  - **Commit:**
+  - **Commit:** `c4e9d5e`
 
 - [x] **T-005** — Valor não positivo é ignorado
   - **Atende:** RN-005, AMB-009
   - **Aceite:** `tests/test_rn005_valor_nao_positivo.py` passa
-  - **Commit:**
+  - **Commit:** `021f619`
 
 - [x] **T-006** — Detecção de duplicatas
   - **Atende:** RN-007, AMB-007
   - **Aceite:** `tests/test_rn007_duplicatas.py` passa
-  - **Commit:**
+  - **Commit:** `7aee342`
 
 - [x] **T-007** — Nota fiscal obrigatória acima de 100,00
   - **Atende:** RN-008, AMB-004
   - **Aceite:** `tests/test_rn008_nota_fiscal.py` passa
-  - **Commit:**
+  - **Commit:** `d12d4af`
 
 ## Fase 3 — Limites
 
 - [x] **T-008** — Limite diário com saldo compartilhado e reembolso parcial
   - **Atende:** RN-009, AMB-001, AMB-002, AMB-003, AMB-014
   - **Aceite:** `tests/test_rn009_limite_diario.py` passa
-  - **Commit:**
+  - **Commit:** `c7d62ea`
 
 - [x] **T-009** — Limite de hospedagem por diária
   - **Atende:** RN-010, AMB-006
   - **Aceite:** `tests/test_rn010_hospedagem.py` passa
-  - **Commit:**
+  - **Commit:** `d3b80ca`
 
 - [x] **T-010** — Dias em viagem ampliam limites diários
   - **Atende:** RN-011, AMB-005, AMB-013
   - **Aceite:** `tests/test_rn011_viagem.py` passa
-  - **Commit:**
+  - **Commit:** `134b176`
 
 ## Fase 4 — Saída e aceite
 
 - [x] **T-011** — Status, motivos, totais e ordem das regras
   - **Atende:** RN-012, AMB-015, seção 8
   - **Aceite:** `tests/test_rn012_status_totais.py` passa
-  - **Commit:**
+  - **Commit:** `aae0eed`, `79e917d`
 
 - [x] **T-012** — Teste de aceite ponta a ponta sobre o exemplo
   - **Atende:** seção 9 inteira
   - **Aceite:** `tests/test_aceite_exemplo.py` passa
-  - **Commit:**
+  - **Commit:** `cacbff2`
 
 - [x] **T-013** — README do projeto e CLAUDE.md preenchido
   - **Atende:** entrega (rubrica §5)
   - **Aceite:** seguindo só o README, rodar e testar funciona numa pasta limpa
-  - **Commit:**
+  - **Commit:** `eeb426e`
 
 ---
 

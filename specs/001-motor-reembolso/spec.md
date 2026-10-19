@@ -439,24 +439,24 @@ e uma duplicata é recusada como duplicata mesmo que também esteja sem nota.
 
 O sistema está pronto quando, para `exemplos/despesas-exemplo.json`:
 
-- [ ] d-001 → `parcial`, 60,00 (`LIMITE_DIARIO`)
-- [ ] d-002 → `recusado`, 0,00 (`LIMITE_DIARIO`)
-- [ ] d-003 → `parcial`, 80,00 (`LIMITE_DIARIO`; nota não exigida em 100,00)
-- [ ] d-004 → `recusado` (`SEM_NOTA_FISCAL`)
-- [ ] d-005 → `recusado` (`CATEGORIA_NAO_REEMBOLSAVEL`)
-- [ ] d-006 → `aprovado`, 54,90
-- [ ] d-007 → `recusado` (`DUPLICATA` de d-006)
-- [ ] d-008 → `recusado` (`FORA_DA_COMPETENCIA`)
-- [ ] d-009 → `ignorado` (`VALOR_NAO_POSITIVO`)
-- [ ] d-010 → `aprovado`, 480,00 (2 diárias, limite 500,00)
-- [ ] d-011 → `aprovado`, 33,33 (arredondado; dia em viagem)
-- [ ] d-012 → `aprovado`, 47,20
-- [ ] d-013 → `recusado` (`SEM_NOTA_FISCAL`)
-- [ ] d-014 → `parcial`, 60,00, categoria `alimentacao`
-- [ ] totais: solicitado 1861,84 · reembolsável 815,43 · glosado 1046,41 · status 4 aprovados, 3 parciais, 6 recusados, 1 ignorado
-- [ ] a saída mantém a ordem da entrada e todos os valores com 2 casas
-- [ ] entrada inválida não gera arquivo de saída e termina com erro
-- [ ] executar duas vezes a mesma entrada produz saídas idênticas
+- [x] d-001 → `parcial`, 60,00 (`LIMITE_DIARIO`)
+- [x] d-002 → `recusado`, 0,00 (`LIMITE_DIARIO`)
+- [x] d-003 → `parcial`, 80,00 (`LIMITE_DIARIO`; nota não exigida em 100,00)
+- [x] d-004 → `recusado` (`SEM_NOTA_FISCAL`)
+- [x] d-005 → `recusado` (`CATEGORIA_NAO_REEMBOLSAVEL`)
+- [x] d-006 → `aprovado`, 54,90
+- [x] d-007 → `recusado` (`DUPLICATA` de d-006)
+- [x] d-008 → `recusado` (`FORA_DA_COMPETENCIA`)
+- [x] d-009 → `ignorado` (`VALOR_NAO_POSITIVO`)
+- [x] d-010 → `aprovado`, 480,00 (2 diárias, limite 500,00)
+- [x] d-011 → `aprovado`, 33,33 (arredondado; dia em viagem)
+- [x] d-012 → `aprovado`, 47,20
+- [x] d-013 → `recusado` (`SEM_NOTA_FISCAL`)
+- [x] d-014 → `parcial`, 60,00, categoria `alimentacao`
+- [x] totais: solicitado 1861,84 · reembolsável 815,43 · glosado 1046,41 · status 4 aprovados, 3 parciais, 6 recusados, 1 ignorado
+- [x] a saída mantém a ordem da entrada e todos os valores com 2 casas
+- [x] entrada inválida não gera arquivo de saída e termina com erro
+- [x] executar duas vezes a mesma entrada produz saídas idênticas
 
 ## 10. O que fica em aberto
 
