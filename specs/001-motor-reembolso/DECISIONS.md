@@ -39,8 +39,8 @@ porque cabia sem deixar a spec inconsistente).
 - *Decisão técnica:* plan.md §4 / "constantes em `politica.py`" → política vira dado carregado de arquivo (DT-006).
 - *Saída:* quem lia `versao_schema 1.0` quebra (campos novos, status novo, `valor_considerado` nulo).
 - *Testes que caem por contrato* (quebra justificada, não bug):
-  - `test_rn012_exemplo_literal_da_secao_4_2`, `test_rn012_contagem_tem_sempre_os_quatro_status`,
-    `test_aceite_totais` — esperavam schema 1.0 e 4 status.
+  - `test_rn012_exemplo_literal_da_secao_4_2`, `test_rn012_contagem_tem_sempre_os_quatro_status`
+    (renomeado para `..._cinco_status`), `test_aceite_totais` — esperavam schema 1.0 e 4 status.
   - `test_rn010_noites_com_nota_dentro_do_limite` — 690,00 passa a ser `pendente_aprovacao` (RN-016).
   - `test_aceite_exemplo` inteiro — o exemplo é de CC-ENG-PLATAFORMA e a v4 muda os limites desse CC.
     Mantido como **regressão v3** (§9.1) rodando com uma tabela equivalente à v3; o novo aceite v4 é §9.2.
@@ -52,4 +52,6 @@ porque cabia sem deixar a spec inconsistente).
   Não reabertas — o trabalho novo está nas tasks abaixo, que citam as antigas.
 - Novas: T-014..T-021 (Fase 5 do `tasks.md`).
 
-**Custo:** ver `docs/RELATORIO.md`, seção "O envelope" (arquivos tocados e diff medidos no fim da absorção).
+**Custo:** ~13 min (22:00 → 22:13). Diff `c56839a..8699e0d` ignorando CR: `src/` 6 arquivos +276/−63,
+`tests/` 12 arquivos +634/−21, `specs/` 4 arquivos +488/−108. 0 arquivos editados à mão pelo aluno.
+4 testes antigos com asserts editados por contrato; 89 testes novos. Detalhe em `docs/RELATORIO.md`, "O envelope".
