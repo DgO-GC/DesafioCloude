@@ -73,7 +73,7 @@
   - **Aceite:** `tests/test_rn012_status_totais.py` passa
   - **Commit:**
 
-- [ ] **T-012** — Teste de aceite ponta a ponta sobre o exemplo
+- [x] **T-012** — Teste de aceite ponta a ponta sobre o exemplo
   - **Atende:** seção 9 inteira
   - **Aceite:** `tests/test_aceite_exemplo.py` passa
   - **Commit:**
