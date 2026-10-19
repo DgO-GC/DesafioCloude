@@ -22,7 +22,7 @@
   - **Aceite:** `tests/test_rn002_arredondamento.py` passa
   - **Commit:**
 
-- [ ] **T-003** — Normalização de categoria e categorias da política
+- [x] **T-003** — Normalização de categoria e categorias da política
   - **Atende:** RN-003, RN-006, AMB-011, AMB-012
   - **Aceite:** `tests/test_rn003_rn006_categoria.py` passa
   - **Commit:**

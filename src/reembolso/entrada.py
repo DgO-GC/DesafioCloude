@@ -74,7 +74,7 @@ def _despesa(bruta, posicao: int) -> Despesa:
     return Despesa(
         id=id_,
         data=_data(bruta, "data", onde),
-        categoria=categoria,
+        categoria=normalizar_categoria(categoria),
         categoria_informada=categoria,
         descricao=_texto_opcional(bruta, "descricao", onde),
         fornecedor=_texto_opcional(bruta, "fornecedor", onde),
@@ -82,6 +82,11 @@ def _despesa(bruta, posicao: int) -> Despesa:
         valor=arredondar(valor),
         tem_nota_fiscal=nota,
     )
+
+
+def normalizar_categoria(categoria: str) -> str:
+    """RN-003: sem espaços nas pontas e em minúsculas; acentos e grafia preservados."""
+    return categoria.strip().lower()
 
 
 def _objeto(dados: dict, campo: str, onde: str) -> dict:

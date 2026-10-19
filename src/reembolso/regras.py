@@ -2,6 +2,7 @@
 from dataclasses import dataclass, field
 from decimal import Decimal
 
+from . import politica
 from .dinheiro import ZERO
 from .entrada import Despesa, Entrada
 
@@ -51,8 +52,18 @@ def elegiveis(avaliacoes):
     return [a for a in avaliacoes if a.elegivel]
 
 
+def categoria_da_politica(avaliacoes, entrada):
+    """RN-006: só categorias com limite definido na política."""
+    for a in elegiveis(avaliacoes):
+        if a.despesa.categoria not in politica.LIMITES:
+            a.encerrar(RECUSADO, "CATEGORIA_NAO_REEMBOLSAVEL", "RN-006",
+                       f"Categoria '{a.despesa.categoria}' não está na política de reembolso.")
+
+
 # Ordem = spec seção 8. Cada etapa recebe a lista inteira (regras de agregação).
-ETAPAS = []
+ETAPAS = [
+    categoria_da_politica,     # RN-006
+]
 
 
 def avaliar(entrada: Entrada) -> list:
