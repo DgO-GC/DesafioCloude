@@ -117,7 +117,7 @@
   - **Aceite:** `tests/test_rn016_aprovacao_manual.py` passa; `test_rn012_status_totais.py` atualizado para o schema 2.0 passa
   - **Commit:**
 
-- [ ] **T-020** — Aceite ponta a ponta: regressão v3 e exemplos do envelope
+- [x] **T-020** — Aceite ponta a ponta: regressão v3 e exemplos do envelope
   - **Atende:** §9.1–9.5; refaz T-012
   - **Aceite:** `tests/test_aceite_exemplo.py` (com tabela v3) e `tests/test_aceite_v4.py` passam
   - **Commit:**

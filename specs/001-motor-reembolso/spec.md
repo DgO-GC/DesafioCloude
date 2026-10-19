@@ -690,40 +690,40 @@ nenhum centro de custo), `exemplos/despesas-exemplo.json` produz:
 
 ### 9.2 Exemplo original com a tabela v4 (CC-ENG-PLATAFORMA: 75 / 80 / hospedagem 0)
 
-- [ ] d-001 → `aprovado`, 72,50 · d-002 → `parcial`, 2,50 (saldo de 75,00)
-- [ ] d-003 → `parcial`, 80,00 · d-004 → `SEM_NOTA_FISCAL`
-- [ ] d-010 e d-013 → `recusado` (`CATEGORIA_BLOQUEADA_NO_CENTRO_CUSTO`)
-- [ ] d-011 → `aprovado`, 33,33 (d-010 recusada ainda caracteriza viagem: limite 112,50)
-- [ ] d-014 → `aprovado`, 61,00
-- [ ] totais: solicitado 1861,84 · reembolsável 351,43 · pendente 0,00 · glosado 1510,41 · 5 aprovados, 2 parciais, 6 recusados, 1 ignorado
+- [x] d-001 → `aprovado`, 72,50 · d-002 → `parcial`, 2,50 (saldo de 75,00)
+- [x] d-003 → `parcial`, 80,00 · d-004 → `SEM_NOTA_FISCAL`
+- [x] d-010 e d-013 → `recusado` (`CATEGORIA_BLOQUEADA_NO_CENTRO_CUSTO`)
+- [x] d-011 → `aprovado`, 33,33 (d-010 recusada ainda caracteriza viagem: limite 112,50)
+- [x] d-014 → `aprovado`, 61,00
+- [x] totais: solicitado 1861,84 · reembolsável 351,43 · pendente 0,00 · glosado 1510,41 · 5 aprovados, 2 parciais, 6 recusados, 1 ignorado
 
 ### 9.3 `exemplos/envelope/despesas-envelope.json` (CC-COMERCIAL)
 
-- [ ] e-001 → `parcial`, 300,00 (representação; 13/07 não é viagem)
-- [ ] e-002 → `aprovado`, 130,46 (22 EUR × 5,93; viagem: limite 135,00)
-- [ ] e-003 → `aprovado`, 85,26 (14,50 EUR × 5,88; sem nota, abaixo de 100 BRL)
-- [ ] e-004 → `parcial`, 135,00 (30 EUR × 5,96 de 17/07 = 178,80)
-- [ ] e-005 → `recusado` (`SEM_NOTA_FISCAL`; 40 USD × 5,50 = 220,00)
-- [ ] e-006 → `recusado` (`MOEDA_SEM_COTACAO`; GBP)
-- [ ] e-007 → `pendente_aprovacao`, 1.200,00 (3 noites × 400,00)
-- [ ] e-008 → `aprovado`, 95,00 (23/07 coberto pela hospedagem: limite 135,00)
-- [ ] e-009 → `recusado` (`CATEGORIA_NAO_REEMBOLSAVEL`; coworking)
-- [ ] e-010 → `aprovado`, 88,00 (sem moeda = BRL; limite 90,00)
-- [ ] totais: solicitado 2457,52 · reembolsável 833,72 · pendente 1200,00 · glosado 423,80 · 4 aprovados, 2 parciais, 3 recusados, 1 pendente
+- [x] e-001 → `parcial`, 300,00 (representação; 13/07 não é viagem)
+- [x] e-002 → `aprovado`, 130,46 (22 EUR × 5,93; viagem: limite 135,00)
+- [x] e-003 → `aprovado`, 85,26 (14,50 EUR × 5,88; sem nota, abaixo de 100 BRL)
+- [x] e-004 → `parcial`, 135,00 (30 EUR × 5,96 de 17/07 = 178,80)
+- [x] e-005 → `recusado` (`SEM_NOTA_FISCAL`; 40 USD × 5,50 = 220,00)
+- [x] e-006 → `recusado` (`MOEDA_SEM_COTACAO`; GBP)
+- [x] e-007 → `pendente_aprovacao`, 1.200,00 (3 noites × 400,00)
+- [x] e-008 → `aprovado`, 95,00 (23/07 coberto pela hospedagem: limite 135,00)
+- [x] e-009 → `recusado` (`CATEGORIA_NAO_REEMBOLSAVEL`; coworking)
+- [x] e-010 → `aprovado`, 88,00 (sem moeda = BRL; limite 90,00)
+- [x] totais: solicitado 2457,52 · reembolsável 833,72 · pendente 1200,00 · glosado 423,80 · 4 aprovados, 2 parciais, 3 recusados, 1 pendente
 
 ### 9.4 `exemplos/envelope/despesas-envelope-cc-desconhecido.json` (CC-SUPORTE-N2 → padrão)
 
-- [ ] f-001 → `aprovado`, 58,00 · f-002 → `parcial`, 250,00
-- [ ] f-003 → `recusado` (`CATEGORIA_NAO_REEMBOLSAVEL`; representação fora do padrão)
-- [ ] f-004 → `aprovado`, 65,76 (12 USD × 5,48; viagem: limite 120,00)
-- [ ] `tabela_de_limites` = `padrao` · totais: solicitado 623,76 · reembolsável 373,76 · glosado 250,00
+- [x] f-001 → `aprovado`, 58,00 · f-002 → `parcial`, 250,00
+- [x] f-003 → `recusado` (`CATEGORIA_NAO_REEMBOLSAVEL`; representação fora do padrão)
+- [x] f-004 → `aprovado`, 65,76 (12 USD × 5,48; viagem: limite 120,00)
+- [x] `tabela_de_limites` = `padrao` · totais: solicitado 623,76 · reembolsável 373,76 · glosado 250,00
 
 ### 9.5 Gerais
 
 - [x] a saída mantém a ordem da entrada e todos os valores com 2 casas
 - [x] entrada inválida não gera arquivo de saída e termina com erro
 - [x] executar duas vezes a mesma entrada produz saídas idênticas
-- [ ] tabela de política ou de câmbio inválida não gera saída e termina com erro
+- [x] tabela de política ou de câmbio inválida não gera saída e termina com erro
 
 ## 10. O que fica em aberto
 
