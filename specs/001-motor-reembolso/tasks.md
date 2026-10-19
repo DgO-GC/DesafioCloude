@@ -68,7 +68,7 @@
 
 ## Fase 4 — Saída e aceite
 
-- [ ] **T-011** — Status, motivos, totais e ordem das regras
+- [x] **T-011** — Status, motivos, totais e ordem das regras
   - **Atende:** RN-012, AMB-015, seção 8
   - **Aceite:** `tests/test_rn012_status_totais.py` passa
   - **Commit:**
