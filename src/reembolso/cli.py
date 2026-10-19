@@ -17,6 +17,8 @@ def calcular(texto_entrada: str) -> dict:
 
 
 def main(argv=None) -> int:
+    if hasattr(sys.stderr, "reconfigure"):
+        sys.stderr.reconfigure(encoding="utf-8")  # Windows usa cp1252 em pipes e quebra acentos
     parser = argparse.ArgumentParser(prog="reembolso", description="Motor de cálculo de reembolso")
     sub = parser.add_subparsers(dest="comando", required=True)
     cmd = sub.add_parser("calcular", help="avalia um arquivo de despesas")

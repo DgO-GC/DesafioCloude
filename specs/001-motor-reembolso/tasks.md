@@ -78,7 +78,7 @@
   - **Aceite:** `tests/test_aceite_exemplo.py` passa
   - **Commit:**
 
-- [ ] **T-013** — README do projeto e CLAUDE.md preenchido
+- [x] **T-013** — README do projeto e CLAUDE.md preenchido
   - **Atende:** entrega (rubrica §5)
   - **Aceite:** seguindo só o README, rodar e testar funciona numa pasta limpa
   - **Commit:**

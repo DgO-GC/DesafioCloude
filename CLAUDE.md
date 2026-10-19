@@ -1,10 +1,5 @@
 # CLAUDE.md
 
-> Este arquivo é lido pelo Claude Code no início de toda sessão. É onde moram as
-> convenções que você não quer repetir em todo prompt.
-> Substitua os `<...>` e apague o que não usar. Mantenha curto — CLAUDE.md longo
-> é CLAUDE.md ignorado.
-
 ## O projeto
 
 Motor de cálculo de reembolso de despesas corporativas. CLI que lê um JSON de
@@ -30,20 +25,29 @@ Se o que eu pedi não está coberto por nenhuma task, me avise em vez de impleme
   de escrever código. Isso é um bug de spec.
 - Todo commit referencia uma task: `feat(T-003): <descrição>`.
   Mudanças de documentação: `docs(spec):`, `docs(plan):`, `docs(tasks):`.
-- Nenhuma regra de negócio entra sem teste.
+- Nenhuma regra de negócio entra sem teste. Não commitar com teste vermelho.
+- A spec não cita linguagem, biblioteca nem arquivo — isso vai no `plan.md`.
 
 ## Stack e comandos
 
-- Linguagem: `<...>`
-- Rodar: `<comando>`
-- Testes: `<comando>`
-- Lint/format: `<comando>`
+- Linguagem: Python 3.10+ só com biblioteca padrão (nada de `pip install`)
+- Rodar: `python run.py calcular --input exemplos/despesas-exemplo.json --output resultado.json`
+- Testes: `python -m unittest discover -s tests -t .`
+- Lint/format: não há ferramenta; seguir PEP 8, linhas até ~110 colunas
 
 ## Convenções de código
 
-- `<nomenclatura, estrutura de pastas, tratamento de erro, o que for relevante>`
-- Valores monetários: `<como são representados — decimal, centavos em inteiro, etc.>`
+- Pipeline em `src/reembolso/regras.py`: a lista `ETAPAS` é a seção 8 da spec, na mesma ordem.
+  Toda etapa tem docstring que começa com o ID da regra (`"""RN-009: ...`).
+- Todo motivo carrega `codigo` estável + `regra` (ID da RN). Código novo → tabela da RN-012.
+- Números de política só em `politica.py`.
+- Erro de entrada → `EntradaInvalida` com o id da despesa; só `cli.py` decide código de saída.
+- Testes: `tests/test_rnNNN_<nome>.py`, métodos `test_rnNNN_<comportamento>`; montar entrada com `tests/apoio.py`.
+- Valores monetários: `decimal.Decimal`, JSON lido com `parse_float=Decimal`; **nunca `float`**.
+  Arredondamento só na entrada (`dinheiro.arredondar`); saída sempre texto com 2 casas.
 
 ## Fora de escopo
 
-- `<o que este projeto explicitamente não faz — evita que o agente invente feature>`
+- Pagamento, integração com folha/contábil, autenticidade de nota fiscal.
+- Vários colaboradores por execução; duplicatas entre períodos; estado entre execuções.
+- Interface gráfica, API HTTP, banco de dados.
