@@ -16,13 +16,15 @@ class TestRN012StatusTotais(unittest.TestCase):
                 {"id": "a-1", "data": "2026-07-03", "categoria": "alimentacao", "valor": 72.50, "tem_nota_fiscal": true},
                 {"id": "a-2", "data": "2026-07-03", "categoria": "alimentacao", "valor": 38.00, "tem_nota_fiscal": true}
             ]}""")
-        self.assertEqual(saida["versao_schema"], "1.0")
+        self.assertEqual(saida["versao_schema"], "2.0")
         self.assertEqual(saida["politica"], "v4")
         self.assertEqual(saida["tabela_de_limites"], "padrao")
         self.assertEqual(saida["colaborador"], {"id": "c-1"})
         self.assertEqual(saida["totais"], {
-            "valor_solicitado": "110.50", "valor_reembolsavel": "60.00", "valor_glosado": "50.50",
-            "itens_por_status": {"aprovado": 0, "parcial": 1, "recusado": 1, "ignorado": 0}})
+            "valor_solicitado": "110.50", "valor_reembolsavel": "60.00",
+            "valor_pendente_aprovacao": "0.00", "valor_glosado": "50.50",
+            "itens_por_status": {"aprovado": 0, "parcial": 1, "recusado": 1, "ignorado": 0,
+                                 "pendente_aprovacao": 0}})
         self.assertEqual(saida["itens"][1], {
             "id": "a-2", "data": "2026-07-03", "categoria": "alimentacao", "moeda": "BRL",
             "valor_informado": "38.00", "taxa_cambio": None, "data_cotacao": None, "valor_considerado": "38.00", "valor_reembolsavel": "0.00",
@@ -34,9 +36,9 @@ class TestRN012StatusTotais(unittest.TestCase):
         ids = [i["id"] for i in rodar(despesa(id="z"), despesa(id="a"), despesa(id="m"))["itens"]]
         self.assertEqual(ids, ["z", "a", "m"])
 
-    def test_rn012_contagem_tem_sempre_os_quatro_status(self):
+    def test_rn012_contagem_tem_sempre_os_cinco_status(self):
         self.assertEqual(rodar()["totais"]["itens_por_status"],
-                         {"aprovado": 0, "parcial": 0, "recusado": 0, "ignorado": 0})
+                         {"aprovado": 0, "parcial": 0, "recusado": 0, "ignorado": 0, "pendente_aprovacao": 0})
 
     def test_rn012_encerrada_tem_motivo_unico(self):
         """Fora do período, categoria inválida, sem nota: só o primeiro motivo da seção 8."""

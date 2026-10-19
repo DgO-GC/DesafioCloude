@@ -84,8 +84,10 @@ class TestAceiteExemplo(unittest.TestCase):
 
     def test_aceite_totais(self):
         self.assertEqual(self.saida["totais"], {
-            "valor_solicitado": "1861.84", "valor_reembolsavel": "815.43", "valor_glosado": "1046.41",
-            "itens_por_status": {"aprovado": 4, "parcial": 3, "recusado": 6, "ignorado": 1}})
+            "valor_solicitado": "1861.84", "valor_reembolsavel": "815.43",
+            "valor_pendente_aprovacao": "0.00", "valor_glosado": "1046.41",
+            "itens_por_status": {"aprovado": 4, "parcial": 3, "recusado": 6, "ignorado": 1,
+                                 "pendente_aprovacao": 0}})
 
     def test_aceite_ordem_e_duas_casas(self):
         self.assertEqual([i["id"] for i in self.saida["itens"]], [f"d-{n:03d}" for n in range(1, 15)])

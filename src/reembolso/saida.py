@@ -1,15 +1,16 @@
 """Monta o documento de saída (spec 4.2, RN-012)."""
 from .dinheiro import ZERO, formatar
-from .regras import IGNORADO, STATUS, Contexto
+from .regras import APROVADO, IGNORADO, PARCIAL, PENDENTE, STATUS, Contexto
 
-VERSAO_SCHEMA = "1.0"
+VERSAO_SCHEMA = "2.0"
 
 
 def montar_saida(ctx: Contexto, avaliacoes: list) -> dict:
     entrada = ctx.entrada
     itens = [_item(a) for a in avaliacoes]
     solicitado = sum((a.valor for a in avaliacoes if a.status != IGNORADO and a.valor is not None), ZERO)
-    reembolsavel = sum((a.reembolsavel for a in avaliacoes), ZERO)
+    reembolsavel = sum((a.reembolsavel for a in avaliacoes if a.status in (APROVADO, PARCIAL)), ZERO)
+    pendente = sum((a.reembolsavel for a in avaliacoes if a.status == PENDENTE), ZERO)
     por_status = {s: 0 for s in STATUS}
     for a in avaliacoes:
         por_status[a.status] += 1
@@ -23,7 +24,8 @@ def montar_saida(ctx: Contexto, avaliacoes: list) -> dict:
         "totais": {
             "valor_solicitado": formatar(solicitado),
             "valor_reembolsavel": formatar(reembolsavel),
-            "valor_glosado": formatar(solicitado - reembolsavel),
+            "valor_pendente_aprovacao": formatar(pendente),
+            "valor_glosado": formatar(solicitado - reembolsavel - pendente),
             "itens_por_status": por_status,
         },
     }

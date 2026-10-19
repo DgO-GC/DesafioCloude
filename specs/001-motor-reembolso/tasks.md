@@ -112,7 +112,7 @@
   - **Aceite:** casos `test_rn011_moeda_*` em `tests/test_rn011_viagem.py` passam
   - **Commit:**
 
-- [ ] **T-019** — Aprovação manual acima de R$ 500,00 e schema de saída 2.0
+- [x] **T-019** — Aprovação manual acima de R$ 500,00 e schema de saída 2.0
   - **Atende:** RN-016, RN-012, §4.2, AMB-027; refaz T-011
   - **Aceite:** `tests/test_rn016_aprovacao_manual.py` passa; `test_rn012_status_totais.py` atualizado para o schema 2.0 passa
   - **Commit:**

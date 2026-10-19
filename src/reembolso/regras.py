@@ -15,7 +15,8 @@ APROVADO = "aprovado"
 PARCIAL = "parcial"
 RECUSADO = "recusado"
 IGNORADO = "ignorado"
-STATUS = (APROVADO, PARCIAL, RECUSADO, IGNORADO)
+PENDENTE = "pendente_aprovacao"
+STATUS = (APROVADO, PARCIAL, RECUSADO, IGNORADO, PENDENTE)
 
 
 @dataclass(frozen=True)
@@ -33,6 +34,7 @@ class Avaliacao:
     taxa: Decimal | None = None
     data_cotacao: object = None
     encerrada_como: str | None = None
+    pendente: bool = False      # RN-016
     motivos: list = field(default_factory=list)
 
     @property
@@ -49,6 +51,8 @@ class Avaliacao:
         """RN-012: status derivado do encerramento e do valor (plan.md DT-002)."""
         if self.encerrada_como:
             return self.encerrada_como
+        if self.pendente:
+            return PENDENTE
         if self.reembolsavel == self.valor:
             return APROVADO
         if self.reembolsavel == ZERO:
@@ -219,6 +223,17 @@ def limite_hospedagem(avaliacoes, ctx):
                 f"Glosados R$ {a.valor - teto}."))
 
 
+def aprovacao_manual(avaliacoes, ctx):
+    """RN-016: reembolsável estritamente acima do limiar vai para aprovação do gestor, sem mudar o valor."""
+    limiar = politica.APROVACAO_MANUAL_ACIMA_DE
+    for a in elegiveis(avaliacoes):
+        if a.reembolsavel > limiar:
+            a.pendente = True
+            a.motivos.append(Motivo("APROVACAO_MANUAL", "RN-016",
+                                    f"Reembolsável de R$ {a.reembolsavel} acima de R$ {limiar} "
+                                    "aguarda aprovação do gestor."))
+
+
 # Ordem = spec seção 8. Cada etapa recebe a lista inteira (regras de agregação).
 ETAPAS = [
     periodo_de_competencia,    # RN-004
@@ -229,6 +244,7 @@ ETAPAS = [
     nota_fiscal,               # RN-008
     limite_diario,             # RN-009
     limite_hospedagem,         # RN-010
+    aprovacao_manual,          # RN-016
 ]
 
 

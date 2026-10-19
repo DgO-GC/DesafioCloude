@@ -21,7 +21,9 @@ class TestRN010Hospedagem(unittest.TestCase):
 
     def test_rn010_noites_com_nota_dentro_do_limite(self):
         r = itens(hosp("a", 690, "Airbnb 3 noites"))
-        self.assertEqual(r["a"]["status"], "aprovado")
+        # v4: 690,00 > 500,00 → pendente de aprovação (RN-016, D-001); o limite de 750,00 não glosou nada.
+        self.assertEqual((r["a"]["status"], r["a"]["valor_reembolsavel"]), ("pendente_aprovacao", "690.00"))
+        self.assertEqual(codigos(r["a"]), ["APROVACAO_MANUAL"])
 
     def test_rn010_acima_do_limite_de_varias_diarias_e_parcial(self):
         r = itens(hosp("a", 800, "Hotel - 3 noites"))
