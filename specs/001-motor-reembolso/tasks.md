@@ -51,7 +51,7 @@
 
 ## Fase 3 — Limites
 
-- [ ] **T-008** — Limite diário com saldo compartilhado e reembolso parcial
+- [x] **T-008** — Limite diário com saldo compartilhado e reembolso parcial
   - **Atende:** RN-009, AMB-001, AMB-002, AMB-003, AMB-014
   - **Aceite:** `tests/test_rn009_limite_diario.py` passa
   - **Commit:**

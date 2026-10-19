@@ -98,6 +98,30 @@ def nota_fiscal(avaliacoes, entrada):
                        f"Valor {a.despesa.valor} acima de R$ {limiar} exige nota fiscal.")
 
 
+NOMES = {"alimentacao": "alimentação", "transporte_urbano": "transporte urbano", "hospedagem": "hospedagem"}
+
+
+def limite_diario(avaliacoes, entrada):
+    """RN-009: limite da soma do dia por categoria, saldo consumido na ordem da entrada."""
+    saldos = {}
+    for a in elegiveis(avaliacoes):
+        d = a.despesa
+        limite = politica.LIMITES[d.categoria]
+        if limite.periodicidade != politica.DIA:
+            continue
+        teto = limite.valor
+        chave = (d.data, d.categoria)
+        saldo = saldos.get(chave, teto)
+        concedido = min(d.valor, saldo)
+        if concedido < d.valor:
+            a.reembolsavel = concedido
+            a.motivos.append(Motivo(
+                "LIMITE_DIARIO", "RN-009",
+                f"Limite diário de {NOMES.get(d.categoria, d.categoria)} em {d.data} é R$ {teto}; "
+                f"restavam R$ {saldo}. Glosados R$ {d.valor - concedido}."))
+        saldos[chave] = saldo - concedido
+
+
 # Ordem = spec seção 8. Cada etapa recebe a lista inteira (regras de agregação).
 ETAPAS = [
     periodo_de_competencia,    # RN-004
@@ -105,6 +129,7 @@ ETAPAS = [
     categoria_da_politica,     # RN-006
     duplicatas,                # RN-007
     nota_fiscal,               # RN-008
+    limite_diario,             # RN-009
 ]
 
 
