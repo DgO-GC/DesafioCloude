@@ -17,7 +17,7 @@
   - **Aceite:** `tests/test_rn001_validacao.py` passa; `python run.py calcular --input exemplos/despesas-exemplo.json --output /tmp/x.json` gera arquivo
   - **Commit:**
 
-- [ ] **T-002** — Arredondamento monetário na entrada
+- [x] **T-002** — Arredondamento monetário na entrada
   - **Atende:** RN-002, AMB-010
   - **Aceite:** `tests/test_rn002_arredondamento.py` passa
   - **Commit:**

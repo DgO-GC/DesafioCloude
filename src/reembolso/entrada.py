@@ -4,6 +4,8 @@ from dataclasses import dataclass
 from datetime import date
 from decimal import Decimal
 
+from .dinheiro import arredondar
+
 
 class EntradaInvalida(Exception):
     pass
@@ -77,7 +79,7 @@ def _despesa(bruta, posicao: int) -> Despesa:
         descricao=_texto_opcional(bruta, "descricao", onde),
         fornecedor=_texto_opcional(bruta, "fornecedor", onde),
         valor_informado=valor,
-        valor=valor,
+        valor=arredondar(valor),
         tem_nota_fiscal=nota,
     )
 
