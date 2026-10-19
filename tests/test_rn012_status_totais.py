@@ -8,15 +8,14 @@ from tests.apoio import despesa, entrada, rodar
 
 class TestRN012StatusTotais(unittest.TestCase):
     def test_rn012_exemplo_literal_da_secao_4_2(self):
-        dados = {
+        # Texto JSON literal: json.dumps(38.00) geraria "38.0" e mudaria valor_informado.
+        saida = calcular("""{
             "colaborador": {"id": "c-1"},
             "periodo": {"competencia": "2026-07", "inicio": "2026-07-01", "fim": "2026-07-31"},
             "despesas": [
-                {"id": "a-1", "data": "2026-07-03", "categoria": "alimentacao", "valor": 72.50, "tem_nota_fiscal": True},
-                {"id": "a-2", "data": "2026-07-03", "categoria": "alimentacao", "valor": 38.00, "tem_nota_fiscal": True},
-            ],
-        }
-        saida = calcular(json.dumps(dados))
+                {"id": "a-1", "data": "2026-07-03", "categoria": "alimentacao", "valor": 72.50, "tem_nota_fiscal": true},
+                {"id": "a-2", "data": "2026-07-03", "categoria": "alimentacao", "valor": 38.00, "tem_nota_fiscal": true}
+            ]}""")
         self.assertEqual(saida["versao_schema"], "1.0")
         self.assertEqual(saida["politica"], "v3")
         self.assertEqual(saida["colaborador"], {"id": "c-1"})
