@@ -1,0 +1,13 @@
+{
+  "versao": "v3",
+  "observacao": "Fixture de teste: a política v3 expressa como tabela (plan.md DT-009). Não é tabela vigente.",
+  "moeda_base": "BRL",
+  "padrao": {
+    "alimentacao": { "limite": 60.00, "periodicidade": "dia" },
+    "transporte_urbano": { "limite": 80.00, "periodicidade": "dia" },
+    "hospedagem": { "limite": 250.00, "periodicidade": "diaria" }
+  },
+  "centros_custo": {},
+  "nota_fiscal_obrigatoria_acima_de": 100.00,
+  "acrescimo_em_viagem_percentual": 50
+}

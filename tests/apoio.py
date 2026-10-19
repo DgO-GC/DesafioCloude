@@ -30,14 +30,35 @@ def entrada(*despesas, inicio="2026-07-01", fim="2026-07-31") -> dict:
     }
 
 
-def rodar(*despesas, **periodo) -> dict:
-    """Retorna a saída completa. Valores com casas decimais são passados como texto JSON."""
-    return calcular(json.dumps(entrada(*despesas, **periodo)))
+def politica(centros_custo=None, **campos) -> dict:
+    """Tabela de política em memória: padrão igual ao da v4, com ajustes."""
+    base = {
+        "versao": "teste",
+        "moeda_base": "BRL",
+        "padrao": {
+            "alimentacao": {"limite": 60.00, "periodicidade": "dia"},
+            "transporte_urbano": {"limite": 80.00, "periodicidade": "dia"},
+            "hospedagem": {"limite": 250.00, "periodicidade": "diaria"},
+        },
+        "centros_custo": centros_custo or {},
+        "nota_fiscal_obrigatoria_acima_de": 100.00,
+        "acrescimo_em_viagem_percentual": 50,
+    }
+    base.update(campos)
+    return base
 
 
-def itens(*despesas, **periodo) -> dict:
+def rodar(*despesas, politica=None, centro_custo="CC-TESTE", **periodo) -> dict:
+    """Retorna a saída completa. politica=None usa a tabela vigente (politicas/politica-v4.json)."""
+    dados = entrada(*despesas, **periodo)
+    dados["colaborador"]["centro_custo"] = centro_custo
+    texto_politica = None if politica is None else json.dumps(politica)
+    return calcular(json.dumps(dados), texto_politica)
+
+
+def itens(*despesas, **opcoes) -> dict:
     """Atalho: itens da saída indexados por id."""
-    return {i["id"]: i for i in rodar(*despesas, **periodo)["itens"]}
+    return {i["id"]: i for i in rodar(*despesas, **opcoes)["itens"]}
 
 
 def codigos(item: dict) -> list:

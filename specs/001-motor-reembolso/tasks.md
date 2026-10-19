@@ -87,7 +87,7 @@
 
 ## Fase 5 — Envelope v4 (D-001)
 
-- [ ] **T-014** — Política lida de tabela externa validada; CLI `--politica`; saída informa versão e tabela
+- [x] **T-014** — Política lida de tabela externa validada; CLI `--politica`; saída informa versão e tabela
   - **Atende:** RN-015 (política), §4.4, §4.2 (`politica`, `tabela_de_limites`); refaz parte de T-003, T-007
   - **Aceite:** `tests/test_rn015_tabelas.py` (casos de política) passa; testes T-001..T-013 continuam passando
   - **Commit:**

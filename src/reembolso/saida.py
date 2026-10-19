@@ -1,13 +1,12 @@
 """Monta o documento de saída (spec 4.2, RN-012)."""
 from .dinheiro import ZERO, formatar
-from .entrada import Entrada
-from .regras import IGNORADO, STATUS
+from .regras import IGNORADO, STATUS, Contexto
 
 VERSAO_SCHEMA = "1.0"
-POLITICA = "v3"
 
 
-def montar_saida(entrada: Entrada, avaliacoes: list) -> dict:
+def montar_saida(ctx: Contexto, avaliacoes: list) -> dict:
+    entrada = ctx.entrada
     itens = [_item(a) for a in avaliacoes]
     solicitado = sum((a.despesa.valor for a in avaliacoes if a.status != IGNORADO), ZERO)
     reembolsavel = sum((a.reembolsavel for a in avaliacoes), ZERO)
@@ -16,7 +15,8 @@ def montar_saida(entrada: Entrada, avaliacoes: list) -> dict:
         por_status[a.status] += 1
     return {
         "versao_schema": VERSAO_SCHEMA,
-        "politica": POLITICA,
+        "politica": ctx.politica.versao,
+        "tabela_de_limites": ctx.nome_tabela,
         "colaborador": entrada.colaborador,
         "periodo": entrada.periodo,
         "itens": itens,

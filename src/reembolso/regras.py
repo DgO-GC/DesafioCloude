@@ -8,6 +8,7 @@ from decimal import Decimal
 from . import politica
 from .dinheiro import ZERO, arredondar
 from .entrada import Despesa, Entrada
+from .politica import Politica
 
 APROVADO = "aprovado"
 PARCIAL = "parcial"
@@ -51,19 +52,34 @@ class Avaliacao:
         return PARCIAL
 
 
+@dataclass(frozen=True)
+class Contexto:
+    """O que toda etapa enxerga (plan.md DT-007)."""
+    entrada: Entrada
+    politica: Politica
+    nome_tabela: str
+    limites: dict
+
+
+def montar_contexto(entrada: Entrada, pol: Politica) -> Contexto:
+    nome, limites = pol.tabela_para(entrada.colaborador.get("centro_custo"))
+    return Contexto(entrada, pol, nome, limites)
+
+
 def elegiveis(avaliacoes):
     return [a for a in avaliacoes if a.elegivel]
 
 
-def periodo_de_competencia(avaliacoes, entrada):
+def periodo_de_competencia(avaliacoes, ctx):
     """RN-004: data da despesa dentro de [inicio, fim], inclusivo."""
+    e = ctx.entrada
     for a in elegiveis(avaliacoes):
-        if not entrada.inicio <= a.despesa.data <= entrada.fim:
+        if not e.inicio <= a.despesa.data <= e.fim:
             a.encerrar(RECUSADO, "FORA_DA_COMPETENCIA", "RN-004",
-                       f"Data {a.despesa.data} fora do período {entrada.inicio} a {entrada.fim}.")
+                       f"Data {a.despesa.data} fora do período {e.inicio} a {e.fim}.")
 
 
-def valor_nao_positivo(avaliacoes, entrada):
+def valor_nao_positivo(avaliacoes, ctx):
     """RN-005: estorno ou zero é ignorado e não abate nada."""
     for a in elegiveis(avaliacoes):
         if a.despesa.valor <= ZERO:
@@ -71,15 +87,15 @@ def valor_nao_positivo(avaliacoes, entrada):
                        f"Valor {a.despesa.valor} não é positivo (estorno ou zero); não abate outras despesas.")
 
 
-def categoria_da_politica(avaliacoes, entrada):
-    """RN-006: só categorias com limite definido na política."""
+def categoria_da_politica(avaliacoes, ctx):
+    """RN-006: só categorias com limite na tabela aplicável."""
     for a in elegiveis(avaliacoes):
-        if a.despesa.categoria not in politica.LIMITES:
+        if a.despesa.categoria not in ctx.limites:
             a.encerrar(RECUSADO, "CATEGORIA_NAO_REEMBOLSAVEL", "RN-006",
                        f"Categoria '{a.despesa.categoria}' não está na política de reembolso.")
 
 
-def duplicatas(avaliacoes, entrada):
+def duplicatas(avaliacoes, ctx):
     """RN-007: mesma data, categoria, fornecedor e valor; a primeira na ordem da entrada vale."""
     originais = {}
     for a in elegiveis(avaliacoes):
@@ -92,9 +108,9 @@ def duplicatas(avaliacoes, entrada):
             originais[chave] = d.id
 
 
-def nota_fiscal(avaliacoes, entrada):
-    """RN-008: acima (estritamente) do limiar exige nota; sem nota, recusa integral."""
-    limiar = politica.NOTA_FISCAL_ACIMA_DE
+def nota_fiscal(avaliacoes, ctx):
+    """RN-008: acima (estritamente) do limiar da tabela exige nota; sem nota, recusa integral."""
+    limiar = ctx.politica.nota_fiscal_acima_de
     for a in elegiveis(avaliacoes):
         if a.despesa.valor > limiar and not a.despesa.tem_nota_fiscal:
             a.encerrar(RECUSADO, "SEM_NOTA_FISCAL", "RN-008",
@@ -104,8 +120,9 @@ def nota_fiscal(avaliacoes, entrada):
 NOMES = {"alimentacao": "alimentação", "transporte_urbano": "transporte urbano", "hospedagem": "hospedagem"}
 
 
-def dias_em_viagem(avaliacoes, entrada) -> set:
+def dias_em_viagem(avaliacoes, ctx) -> set:
     """RN-011: dias D..D+N cobertos por hospedagem positiva no período, mesmo se ela for recusada."""
+    entrada = ctx.entrada
     dias = set()
     for a in avaliacoes:
         d = a.despesa
@@ -114,17 +131,18 @@ def dias_em_viagem(avaliacoes, entrada) -> set:
     return dias
 
 
-def limite_diario(avaliacoes, entrada):
+def limite_diario(avaliacoes, ctx):
     """RN-009 + RN-011: limite da soma do dia por categoria, saldo consumido na ordem da entrada."""
-    viagem = dias_em_viagem(avaliacoes, entrada)
+    viagem = dias_em_viagem(avaliacoes, ctx)
+    acrescimo = ctx.politica.acrescimo_viagem
     saldos = {}
     for a in elegiveis(avaliacoes):
         d = a.despesa
-        limite = politica.LIMITES[d.categoria]
+        limite = ctx.limites[d.categoria]
         if limite.periodicidade != politica.DIA:
             continue
         em_viagem = d.data in viagem
-        teto = arredondar(limite.valor * (1 + politica.ACRESCIMO_VIAGEM)) if em_viagem else limite.valor
+        teto = arredondar(limite.valor * (1 + acrescimo)) if em_viagem else limite.valor
         chave = (d.data, d.categoria)
         saldo = saldos.get(chave, teto)
         concedido = min(d.valor, saldo)
@@ -133,7 +151,7 @@ def limite_diario(avaliacoes, entrada):
             a.motivos.append(Motivo(
                 "LIMITE_DIARIO", "RN-009",
                 f"Limite diário de {NOMES.get(d.categoria, d.categoria)} em {d.data}"
-                f"{' (em viagem, +50%)' if em_viagem else ''} é R$ {teto}; "
+                f"{f' (em viagem, +{acrescimo * 100:g}%)' if em_viagem else ''} é R$ {teto}; "
                 f"restavam R$ {saldo}. Glosados R$ {d.valor - concedido}."))
         saldos[chave] = saldo - concedido
 
@@ -148,11 +166,11 @@ def diarias(descricao: str) -> int:
     return max(int(achado.group(1)), 1) if achado else 1
 
 
-def limite_hospedagem(avaliacoes, entrada):
+def limite_hospedagem(avaliacoes, ctx):
     """RN-010: limite por diária, cada hospedagem limitada sozinha."""
     for a in elegiveis(avaliacoes):
         d = a.despesa
-        limite = politica.LIMITES[d.categoria]
+        limite = ctx.limites[d.categoria]
         if limite.periodicidade != politica.DIARIA:
             continue
         n = diarias(d.descricao)
@@ -177,8 +195,8 @@ ETAPAS = [
 ]
 
 
-def avaliar(entrada: Entrada) -> list:
-    avaliacoes = [Avaliacao(d, d.valor) for d in entrada.despesas]
+def avaliar(ctx: Contexto) -> list:
+    avaliacoes = [Avaliacao(d, d.valor) for d in ctx.entrada.despesas]
     for etapa in ETAPAS:
-        etapa(avaliacoes, entrada)
+        etapa(avaliacoes, ctx)
     return avaliacoes

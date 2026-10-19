@@ -17,7 +17,8 @@ class TestRN012StatusTotais(unittest.TestCase):
                 {"id": "a-2", "data": "2026-07-03", "categoria": "alimentacao", "valor": 38.00, "tem_nota_fiscal": true}
             ]}""")
         self.assertEqual(saida["versao_schema"], "1.0")
-        self.assertEqual(saida["politica"], "v3")
+        self.assertEqual(saida["politica"], "v4")
+        self.assertEqual(saida["tabela_de_limites"], "padrao")
         self.assertEqual(saida["colaborador"], {"id": "c-1"})
         self.assertEqual(saida["totais"], {
             "valor_solicitado": "110.50", "valor_reembolsavel": "60.00", "valor_glosado": "50.50",
