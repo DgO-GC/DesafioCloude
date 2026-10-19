@@ -85,9 +85,54 @@
 
 ---
 
-## Fase 5 — Envelope (criar no Dia 2)
+## Fase 5 — Envelope v4 (D-001)
 
-<Novas tasks a partir da mudança de requisito. Numeração continua de onde parou.>
+- [ ] **T-014** — Política lida de tabela externa validada; CLI `--politica`; saída informa versão e tabela
+  - **Atende:** RN-015 (política), §4.4, §4.2 (`politica`, `tabela_de_limites`); refaz parte de T-003, T-007
+  - **Aceite:** `tests/test_rn015_tabelas.py` (casos de política) passa; testes T-001..T-013 continuam passando
+  - **Commit:**
+
+- [ ] **T-015** — Tabela de limites por centro de custo com herança do padrão e limite 0
+  - **Atende:** RN-013, RN-006, AMB-016, AMB-017, AMB-018, AMB-019; refaz T-003
+  - **Aceite:** `tests/test_rn013_centro_custo.py` passa
+  - **Commit:**
+
+- [ ] **T-016** — Limites, limiar de nota e acréscimo vindos da tabela, por periodicidade
+  - **Atende:** RN-008, RN-009, RN-010, RN-011 (acréscimo), AMB-025; refaz T-007..T-010
+  - **Aceite:** `tests/test_rn016_periodicidade_da_tabela.py` passa
+  - **Commit:**
+
+- [ ] **T-017** — Campo `moeda`, tabela de câmbio e conversão para BRL pela cotação da data
+  - **Atende:** RN-014, RN-015 (câmbio), RN-007 (chave com moeda), AMB-020..AMB-023, AMB-028, AMB-029
+  - **Aceite:** `tests/test_rn014_cambio.py` e casos de câmbio de `test_rn015_tabelas.py` passam
+  - **Commit:**
+
+- [ ] **T-018** — Despesa em moeda estrangeira caracteriza dia em viagem
+  - **Atende:** RN-011, AMB-024; refaz T-010
+  - **Aceite:** casos `test_rn011_moeda_*` em `tests/test_rn011_viagem.py` passam
+  - **Commit:**
+
+- [ ] **T-019** — Aprovação manual acima de R$ 500,00 e schema de saída 2.0
+  - **Atende:** RN-016, RN-012, §4.2, AMB-027; refaz T-011
+  - **Aceite:** `tests/test_rn016_aprovacao_manual.py` passa; `test_rn012_status_totais.py` atualizado para o schema 2.0 passa
+  - **Commit:**
+
+- [ ] **T-020** — Aceite ponta a ponta: regressão v3 e exemplos do envelope
+  - **Atende:** §9.1–9.5; refaz T-012
+  - **Aceite:** `tests/test_aceite_exemplo.py` (com tabela v3) e `tests/test_aceite_v4.py` passam
+  - **Commit:**
+
+- [ ] **T-021** — README e CLAUDE.md para a v4
+  - **Atende:** entrega
+  - **Aceite:** README mostra como rodar com tabela/câmbio padrão e alternativos; comandos conferidos numa pasta limpa
+  - **Commit:**
+
+## Fase 6 — Fechamento
+
+- [ ] **T-022** — Relatório final e sessões exportadas
+  - **Atende:** entrega (`docs/RELATORIO.md`, `docs/sessions/`)
+  - **Aceite:** os 5 blocos do relatório citam commits/arquivos; `docs/sessions/` tem o export da sessão
+  - **Commit:**
 
 ---
 
@@ -107,4 +152,12 @@
 | RN-010 / AMB-006 | T-009 | `test_rn010_hospedagem` |
 | RN-011 / AMB-005, 013 | T-010 | `test_rn011_viagem` |
 | RN-012 / AMB-015 | T-011 | `test_rn012_status_totais` |
-| §9 | T-012 | `test_aceite_exemplo` |
+| §9 (v1.0) / §9.1 | T-012, T-020 | `test_aceite_exemplo` |
+| RN-013 / AMB-016..019 | T-015 | `test_rn013_centro_custo` |
+| RN-014 / AMB-020..023, 028, 029 | T-017 | `test_rn014_cambio` |
+| RN-015 | T-014, T-017 | `test_rn015_tabelas` |
+| RN-008..011 via tabela / AMB-025 | T-016 | `test_rn016_periodicidade_da_tabela` |
+| RN-011 / AMB-024 | T-018 | `test_rn011_viagem` (`test_rn011_moeda_*`) |
+| RN-016 / AMB-027 | T-019 | `test_rn016_aprovacao_manual` |
+| RN-012 (schema 2.0) | T-019 | `test_rn012_status_totais` |
+| §9.2–9.4 | T-020 | `test_aceite_v4` |
