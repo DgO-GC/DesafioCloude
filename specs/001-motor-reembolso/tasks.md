@@ -136,10 +136,10 @@
 
 ## Fase 7 — Revisão (D-002)
 
-- [ ] **T-023** — Despesa recusada por falta de nota ou duplicata não caracteriza viagem
+- [x] **T-023** — Despesa recusada por falta de nota ou duplicata não caracteriza viagem
   - **Atende:** RN-011, AMB-005, D-002; refaz T-010 e T-018
   - **Aceite:** `tests/test_rn011_viagem.py` passa, incluindo `test_rn011_hospedagem_sem_nota_nao_caracteriza_viagem` e `test_rn011_brecha_hospedagem_falsa_30_noites`
-  - **Commit:**
+  - **Commit:`3817f30` `b0dd262`
 
 ---
 
