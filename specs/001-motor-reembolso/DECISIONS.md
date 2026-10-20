@@ -6,6 +6,29 @@
 Ordem cronológica inversa: a mais recente primeiro.
 
 ---
+## D-002 — Despesa sem comprovante não caracteriza viagem · `2026-10-20`
+
+**Gatilho:** revisão pós-entrega. Analisei o spec; identifiquei que uma
+hospedagem falsa, sem nota, com "30 noites" na descrição, é recusada mas estende o limite de
+viagem (+50%) a todas as refeições e corridas do mês. Entrada de demonstração: almoços de 90,00
+em três semanas diferentes e um táxi de 100,00 → 370,00 reembolsados, contra 260,00 sem a hospedagem falsa.
+
+**O que mudou na spec (2.0 → 2.1):**
+- RN-011: despesa recusada por falta de nota (RN-008) ou duplicata (RN-007) não caracteriza viagem,
+  nem como hospedagem nem como moeda estrangeira.
+- AMB-005: decisão e justificativa revistas.
+- S7: caso de borda invertido + caso novo (hospedagem bloqueada no CC continua caracterizando).
+- S10: risco remanescente da AMB-006 registrado.
+
+**Por quê:** a justificativa antiga ("a falta de nota não desfaz o fato de que houve viagem") supunha
+o fato que a nota existe para provar.
+
+**O que isso invalidou:** o teste `test_rn011_hospedagem_recusada_por_nota_ainda_caracteriza_viagem`
+(passa a afirmar o contrário). Nenhum critério da §9 muda.
+
+**Tasks afetadas:** nova T-023.
+
+**Custo:** <preencha: quantos arquivos você tocou e quanto tempo levou>
 
 ## D-001 — Política v4: limites por centro de custo, moeda estrangeira e aprovação manual · `2026-10-18`
 
