@@ -1,6 +1,6 @@
 # Spec — Motor de Cálculo de Reembolso
 
-**Versão:** Versão: 2.1 (ver `DECISIONS.md` D-001 e D-002)` · **Status:** aprovada para implementação · **Última alteração:** 2026-10-20
+**Versão:** 2.1 (ver `DECISIONS.md` D-001 e D-002)` · **Status:** aprovada para implementação · **Última alteração:** 2026-10-20
 
 > **Regra de ouro deste arquivo:** ele descreve o QUÊ e o PORQUÊ. Nenhuma linha
 > aqui cita linguagem, biblioteca, classe, função ou estrutura de pasta.
