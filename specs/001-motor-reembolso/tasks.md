@@ -134,6 +134,13 @@
   - **Aceite:** os 5 blocos do relatório citam commits/arquivos; `docs/sessions/` tem o export da sessão
   - **Commit:** `ec2c167`
 
+## Fase 7 — Revisão (D-002)
+
+- [ ] **T-023** — Despesa recusada por falta de nota ou duplicata não caracteriza viagem
+  - **Atende:** RN-011, AMB-005, D-002; refaz T-010 e T-018
+  - **Aceite:** `tests/test_rn011_viagem.py` passa, incluindo `test_rn011_hospedagem_sem_nota_nao_caracteriza_viagem` e `test_rn011_brecha_hospedagem_falsa_30_noites`
+  - **Commit:**
+
 ---
 
 ## Cobertura
@@ -161,3 +168,4 @@
 | RN-016 / AMB-027 | T-019 | `test_rn016_aprovacao_manual` |
 | RN-012 (schema 2.0) | T-019 | `test_rn012_status_totais` |
 | §9.2–9.4 | T-020 | `test_aceite_v4` |
+| RN-011 / AMB-005 (D-002) | T-023 | `test_rn011_viagem` |
