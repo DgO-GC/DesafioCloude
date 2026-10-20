@@ -156,14 +156,16 @@ NOMES = {"alimentacao": "alimentação", "transporte_urbano": "transporte urbano
 
 
 def dias_em_viagem(avaliacoes, ctx) -> set:
-    """RN-011: (a) dias D..D+N cobertos por hospedagem positiva no período, mesmo se ela for recusada;
-    (b) dias com despesa positiva no período em moeda estrangeira (AMB-024)."""
+    """RN-011: (a) dias D..D+N cobertos por hospedagem positiva no período; (b) dias com despesa
+    positiva no período em moeda estrangeira (AMB-024). Recusada sem nota ou duplicata não conta (D-002)."""
     entrada = ctx.entrada
     dias = set()
     for a in avaliacoes:
         d = a.despesa
         if d.valor <= ZERO or not entrada.inicio <= d.data <= entrada.fim:
             continue
+        if any(m.codigo in ("SEM_NOTA_FISCAL", "DUPLICATA") for m in a.motivos):
+            continue  # D-002: sem comprovante não prova viagem
         if d.categoria == "hospedagem":
             dias.update(d.data + timedelta(days=i) for i in range(diarias(d.descricao) + 1))
         if d.moeda != BRL:
