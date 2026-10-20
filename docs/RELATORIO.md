@@ -47,7 +47,13 @@ numa mensagem só ("Pode executar com as decisões propostas", S:L339). Isso tra
 justamente a parte que vale 25 pontos e que o desafio diz ser minha. Ao reler a spec depois,
 há decisões que eu talvez tomasse diferente (por exemplo, AMB-006: extrair o número de diárias
 da descrição livre é frágil; "1 diária se não disser" pode punir quem esqueceu de escrever).
-✍️ Diego: *(complete aqui se mudaria alguma decisão e por quê).*
+✍️ Diego: Notei bastante poder, mas ao mesmo tempo uma certa ética da IA ao ser questionada em se passar
+por mim, utilizar da desosnestidade baseado no escopo do que propõe o projeto, não foi uma alternativa.
+No entanto, seguindo o que foi pedido no prompt inicial, percebi que o cloude pode trabalhar 
+de maneira orgânica em identificar o que poderia entrar ou não nmesse relatório final.
+Acredito que se pudesse mudar alguma devisão tomada por mim, seria que, ao invés de aprovar as decisões
+em um lote só para que depois pudesse analisar tudo, aprovaria em pequenos lotes, entendendo 
+passo a passo nas tomadas decisões de acordo com o tema.
 
 **Onde não deleguei e deveria ter delegado:** a revisão. Não usei um segundo agente
 (subagente revisor) para ler a spec procurando ambiguidade não resolvida ou teste que testa a
