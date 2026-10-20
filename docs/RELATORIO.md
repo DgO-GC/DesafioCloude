@@ -123,6 +123,15 @@ hospedagem recusada ainda prova viagem; (5) na v4, viagem internacional sem hote
 > o repositório, você encontrar algo errado, registre como Caso 0 — esse seria o caso "humano"
 > que a rubrica pede).*
 
+### Caso 0 — Erro de spec, cometido pela IA, e o código faz exatamente o que a spec manda.
+✍️ A falha: uma hospedagem sem comprovante “libera” limites maiores no mês inteiro
+O que a spec diz hoje (RN-011 / AMB-005): um dia conta como “em viagem” se estiver coberto por uma 
+hospedagem lançada, “mesmo que ela própria seja recusada (por exemplo, por falta de nota)”. 
+O número de noites é lido da descrição, texto livre que o próprio colaborador escreve.
+A brecha: um colaborador lança uma hospedagem falsa de R$ 150, sem nota, com a descrição “Pousada 
+30 noites”. A hospedagem é recusada, então ele não recebe nada por ela. Mas ela “prova” viagem no
+mês inteiro, e todas as refeições e corridas ganham +50% de limite.
+
 ### Caso 1 — Total do aceite somado errado na spec
 
 **O que ele propôs:** na §9 da spec 1.0, "solicitado 2001,84 · glosado 1186,41" para o exemplo.
