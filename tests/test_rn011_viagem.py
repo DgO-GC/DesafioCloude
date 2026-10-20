@@ -40,10 +40,26 @@ class TestRN011Viagem(unittest.TestCase):
         r = itens(hotel(), alim("a", "2026-07-13", 85))
         self.assertEqual(r["a"]["valor_reembolsavel"], "60.00")
 
-    def test_rn011_hospedagem_recusada_por_nota_ainda_caracteriza_viagem(self):
+    def test_rn011_hospedagem_sem_nota_nao_caracteriza_viagem(self):
+        """D-002: invertido. Antes (v2.0) a refeição saía aprovada com limite 90."""
         r = itens(hotel(data="2026-07-22", descricao="Airbnb 3 noites", valor=690, tem_nota_fiscal=False),
                   alim("a", "2026-07-24", 85))
         self.assertEqual(codigos(r["h"]), ["SEM_NOTA_FISCAL"])
+        self.assertEqual(r["a"]["valor_reembolsavel"], "60.00")
+
+    def test_rn011_brecha_hospedagem_falsa_30_noites(self):
+        """D-002: hospedagem sem nota com '30 noites' não amplia os limites do mês."""
+        r = itens(hotel(data="2026-07-01", descricao="Pousada 30 noites", valor=150, tem_nota_fiscal=False),
+                  alim("a", "2026-07-15", 90),
+                  despesa(id="t", data="2026-07-29", categoria="transporte_urbano", valor=100))
+        self.assertEqual(r["a"]["valor_reembolsavel"], "60.00")
+        self.assertEqual(r["t"]["valor_reembolsavel"], "80.00")
+
+    def test_rn011_hospedagem_duplicada_sozinha_nao_estende_viagem(self):
+        """D-002: a original (com nota) caracteriza; a cópia não acrescenta nada."""
+        r = itens(hotel(id="h1", fornecedor="H", descricao="1 noite"), hotel(id="h2", fornecedor="H", descricao="1 noite"),
+                  alim("a", "2026-07-15", 85))
+        self.assertEqual(codigos(r["h2"]), ["DUPLICATA"])
         self.assertEqual(r["a"]["status"], "aprovado")
 
     def test_rn011_hospedagem_fora_do_periodo_nao_caracteriza_viagem(self):
