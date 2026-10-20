@@ -1,6 +1,6 @@
 # Spec — Motor de Cálculo de Reembolso
 
-**Versão:** 2.0 (política v4 — ver `DECISIONS.md` D-001) · **Status:** aprovada para implementação · **Última alteração:** 2026-10-18
+**Versão:** Versão: 2.1 (ver `DECISIONS.md` D-001 e D-002)` · **Status:** aprovada para implementação · **Última alteração:** 2026-10-20
 
 > **Regra de ouro deste arquivo:** ele descreve o QUÊ e o PORQUÊ. Nenhuma linha
 > aqui cita linguagem, biblioteca, classe, função ou estrutura de pasta.
@@ -281,9 +281,10 @@ hospedagem da entrada com valor > 0 e data dentro do período, **ou** (b) há na
 alguma despesa com valor > 0, data dentro do período e moeda diferente de `BRL` naquela data
 (viagem internacional — v4 item B). Uma
 hospedagem com data D e N diárias (RN-010) cobre os dias **D até D+N, inclusive**
-(as noites mais o dia do check-out). A hospedagem cobre os dias mesmo que ela própria
-seja recusada (por exemplo, por falta de nota): a ausência de nota impede o reembolso
-da diária, não desfaz o fato de que houve viagem.
+(as noites mais o dia do check-out). Uma despesa recusada por falta de nota fiscal (RN-008) ou por ser duplicata (RN-007)
+**não** caracteriza viagem, nem por (a) nem por (b): sem comprovante não há prova de que
+a viagem aconteceu (AMB-005, D-002). Recusas por outros motivos — por exemplo, hospedagem
+bloqueada no centro de custo ou moeda sem cotação — continuam caracterizando viagem.
 Em dia em viagem os limites das categorias de periodicidade `dia` são ampliados pelo
 percentual da tabela (50% na v4: 60,00 → 90,00; 80,00 → 120,00; 75,00 → 112,50), arredondado
 para centavos. Limites de periodicidade `diaria` (hospedagem) **não** são ampliados.
@@ -406,7 +407,9 @@ total ou paga até 100).
 
 **Texto original do RH:** "Colaborador em viagem tem limites ampliados em 50%."
 **O que não está claro:** a entrada não tem campo de viagem nem de destino.
-**Decisão:** dia em viagem é aquele coberto por uma hospedagem lançada no período (RN-011).
+**Decisão:** dia em viagem é aquele coberto por uma hospedagem lançada no período **e comprovada**
+(não recusada por falta de nota nem por duplicata) (RN-011). *(v1.0/2.0 aceitavam hospedagem
+recusada por falta de nota — revisto em D-002.)*
 **Justificativa:** é a única evidência objetiva de viagem disponível nos dados; usar a descrição ("Hotel Rio") ou o fornecedor seria adivinhação.
 **Regra afetada:** RN-011
 
@@ -626,7 +629,8 @@ tem; se 31/07 está dentro; o que fazer com a despesa de abril lançada em julho
 | Hospedagem sem nº de diárias | 310,00 | 1 diária → 250,00 parcial | RN-010 |
 | Dia em viagem | alimentação 85,00 no dia seguinte ao check-in | aprovado (limite 90,00) | RN-011 |
 | Dia do check-out | hospedagem 14/07, 2 diárias; refeição 16/07 | ainda em viagem | RN-011 |
-| Hospedagem recusada caracteriza viagem | hospedagem sem nota em 22/07 | 22/07+ são dias em viagem | RN-011 |
+| Hospedagem sem nota não caracteriza viagem | hospedagem sem nota em 22/07 | 22/07+ **não** são dias em viagem | RN-011 |
+| Hospedagem bloqueada caracteriza viagem | CC-ENG-PLATAFORMA, hospedagem com nota | dias cobertos são viagem | RN-011 |
 | Categoria em maiúsculas | "ALIMENTACAO" 61,00 | alimentacao, 60,00 parcial | RN-003, RN-009 |
 | Sábado | alimentação 47,20 no sábado | aprovado | AMB-014 |
 | Duplicata fora do período | duas cópias de 15/04 | ambas recusadas por competência | RN-004, RN-007 |
@@ -734,3 +738,4 @@ nenhum centro de custo), `exemplos/despesas-exemplo.json` produz:
 - **Cotação em data posterior à despesa** (despesa num domingo, cotação só na segunda): não usada (AMB-020). Se o financeiro preferir a próxima cotação, muda só a RN-014.
 - **Viagem internacional em dias sem despesa estrangeira:** um dia em Lisboa pago só em BRL (cartão nacional) não é dia em viagem, a menos que haja hospedagem cobrindo-o.
 - **Itens pendentes e duplicata/limite diário:** um item pendente consome o saldo do dia como se aprovado; se o gestor reprovar, outra despesa do mesmo dia não é recalculada.
+- **Descrição livre define o número de noites (AMB-006):** mesmo com nota, um colaborador pode escrever "30 noites" numa hospedagem de 1 noite e estender os dias em viagem. A nota fiscal limita o risco, mas não o elimina; conferir noites contra a nota fica fora do escopo.
