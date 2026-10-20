@@ -28,7 +28,7 @@ o fato que a nota existe para provar.
 
 **Tasks afetadas:** nova T-023.
 
-**Custo:** <preencha: quantos arquivos você tocou e quanto tempo levou>
+**Custo:** 5 arquivos (spec, DECISIONS, tasks, regras.py e o teste), entre 10:41 e 11:24.
 
 ## D-001 — Política v4: limites por centro de custo, moeda estrangeira e aprovação manual · `2026-10-18`
 
