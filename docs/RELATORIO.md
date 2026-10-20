@@ -50,8 +50,8 @@ da descrição livre é frágil; "1 diária se não disser" pode punir quem esqu
 ✍️ Diego: Notei bastante poder, mas ao mesmo tempo uma certa ética da IA ao ser questionada em se passar
 por mim, utilizar da desosnestidade baseado no escopo do que propõe o projeto, não foi uma alternativa.
 No entanto, seguindo o que foi pedido no prompt inicial, percebi que o cloude pode trabalhar 
-de maneira orgânica em identificar o que poderia entrar ou não nmesse relatório final.
-Acredito que se pudesse mudar alguma devisão tomada por mim, seria que, ao invés de aprovar as decisões
+de maneira orgânica em identificar o que poderia entrar ou não nesse relatório final.
+Acredito que se pudesse mudar alguma decisão tomada por mim, teria que, ao invés de aprovar as decisões
 em um lote só para que depois pudesse analisar tudo, aprovaria em pequenos lotes, entendendo 
 passo a passo nas tomadas decisões de acordo com o tema.
 
@@ -119,9 +119,7 @@ hospedagem recusada ainda prova viagem; (5) na v4, viagem internacional sem hote
 
 > Honestidade primeiro: **todos os casos abaixo foram erros do agente pegos pelo próprio agente**,
 > por teste falhando ou por conferência de conta, durante a execução. Eu não peguei nenhum erro
-> lendo diff, porque aprovei o plano e só revisei o resultado no fim. ✍️ Diego: *(se, ao revisar
-> o repositório, você encontrar algo errado, registre como Caso 0 — esse seria o caso "humano"
-> que a rubrica pede).*
+> lendo diff, porque aprovei o plano e só revisei o resultado no fim.
 
 ### Caso 0 — Erro de spec, cometido pela IA, e o código faz exatamente o que a spec manda.
 ✍️ A falha: uma hospedagem sem comprovante “libera” limites maiores no mês inteiro
@@ -201,9 +199,9 @@ README roda sem intervenção (S: após T-013 e T-021); cálculo à mão de todo
 **antes** de rodar o motor — 14 itens da v3, 14 da v4, 10 do envelope e 4 do CC desconhecido
 bateram na primeira execução do aceite.
 
-**Li o diff inteiro em que porcentagem das entregas?** ✍️ Diego: *(seja honesto. Fato verificável:
-entre o "pode executar" (S:L339) e o push não houve nenhuma mensagem minha na sessão — a revisão,
-se houve, foi depois).*
+**Recusa do agente a utilizar um token fornecido por mim no chat** ✍️ Diego: Devido a problema de 
+conexão da IA com meu GitHub pessoal acabei fornecendo um token indevidamente no chat.
+o Agente se recusou a usar e imediatamente me alertou a deletar o token por motivos de segurança.
 
 **O que aceitei sem verificar direito:** as 14 decisões de ambiguidade (aprovadas em bloco) e a
 spec 2.0 com as 14 decisões novas da v4, que eu não aprovei individualmente — o agente decidiu
@@ -278,11 +276,15 @@ com as expectativas intactas e 4 tiveram asserts editados por contrato; testes n
 **Para qual tamanho de projeto isto valeu a pena?** Pelo que vi aqui: qualquer projeto com regra
 de negócio ambígua e uma segunda rodada de requisito. A §8 e as AMB-* pagaram a conta já no envelope.
 
-**Para qual não valeria?** ✍️ Diego.
+**Para qual não valeria?** ✍️ Diego: Acrdito que a burocracia de escrever spec, tasks, decisions, etc,
+só valha em casos complexos ou de projetos com magnetude ampla de uma grande companhia por exemplo.
+Em casos de scripts descartaveis, protótipos ou apenas correção de linhas, não vejo relevância. 
 
 **O que eu faria diferente:** decidir eu mesmo as ambiguidades, uma a uma, antes de deixar o agente
 escrever a spec; e abrir uma segunda sessão (ou subagente) só para revisar testes contra a spec.
 
-**A coisa mais desconfortável que aprendi sobre como eu trabalho com IA:** ✍️ Diego. *(Sugestão de
-partida, se for verdade para você: "consegui entregar um desafio sobre processo sem participar do
-processo — o que mostra quanto o processo depende de eu decidir estar nele.")*
+**A coisa mais desconfortável que aprendi sobre como eu trabalho com IA:** ✍️ Diego: De algum modo, foi 
+possível entregar todo o projeto sem uma atuação de fato, não acho que seja a ser desconfortável, mas 
+não confiável seja o termo certo. Em caso de um projeto com a devida importância comercial, será inevitável
+o review de tudo que foi criado, dai a importância de realizar uma aprovação de execução em lotes menores.
+
