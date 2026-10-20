@@ -47,7 +47,7 @@ numa mensagem só ("Pode executar com as decisões propostas", S:L339). Isso tra
 justamente a parte que vale 25 pontos e que o desafio diz ser minha. Ao reler a spec depois,
 há decisões que eu talvez tomasse diferente (por exemplo, AMB-006: extrair o número de diárias
 da descrição livre é frágil; "1 diária se não disser" pode punir quem esqueceu de escrever).
-✍️ Diego: Notei bastante poder, mas ao mesmo tempo uma certa ética da IA ao ser questionada em se passar
+✍️ Notei bastante poder, mas ao mesmo tempo uma certa ética da IA ao ser questionada em se passar
 por mim, utilizar da desosnestidade baseado no escopo do que propõe o projeto, não foi uma alternativa.
 No entanto, seguindo o que foi pedido no prompt inicial, percebi que o cloude pode trabalhar 
 de maneira orgânica em identificar o que poderia entrar ou não nesse relatório final.
@@ -117,7 +117,7 @@ hospedagem recusada ainda prova viagem; (5) na v4, viagem internacional sem hote
 
 ## Discernimento
 
-> Honestidade primeiro: **todos os casos abaixo foram erros do agente pegos pelo próprio agente**,
+> Honestidade primeiro: **todos os casos abaixo foram erros do agente pegos pelo próprio agente com exceção do caso 0**,
 > por teste falhando ou por conferência de conta, durante a execução. Eu não peguei nenhum erro
 > lendo diff, porque aprovei o plano e só revisei o resultado no fim.
 
@@ -199,7 +199,10 @@ README roda sem intervenção (S: após T-013 e T-021); cálculo à mão de todo
 **antes** de rodar o motor — 14 itens da v3, 14 da v4, 10 do envelope e 4 do CC desconhecido
 bateram na primeira execução do aceite.
 
-**Recusa do agente a utilizar um token fornecido por mim no chat** ✍️ Diego: Devido a problema de 
+**Li o diff inteiro em que porcentagem?** ✍️ Por conta do lote total que aceitei, tive que fazer uma
+revisão mais minunciosa quanto as alterações feitas, me custou tempo. Em torno de 70% - 80% do diff.
+
+**Recusa do agente a utilizar um token fornecido por mim no chat** ✍️ Devido a problema de 
 conexão da IA com meu GitHub pessoal acabei fornecendo um token indevidamente no chat.
 o Agente se recusou a usar e imediatamente me alertou a deletar o token por motivos de segurança.
 
@@ -276,14 +279,14 @@ com as expectativas intactas e 4 tiveram asserts editados por contrato; testes n
 **Para qual tamanho de projeto isto valeu a pena?** Pelo que vi aqui: qualquer projeto com regra
 de negócio ambígua e uma segunda rodada de requisito. A §8 e as AMB-* pagaram a conta já no envelope.
 
-**Para qual não valeria?** ✍️ Diego: Acrdito que a burocracia de escrever spec, tasks, decisions, etc,
+**Para qual não valeria?** ✍️ Acrdito que a burocracia de escrever spec, tasks, decisions, etc,
 só valha em casos complexos ou de projetos com magnetude ampla de uma grande companhia por exemplo.
 Em casos de scripts descartaveis, protótipos ou apenas correção de linhas, não vejo relevância. 
 
 **O que eu faria diferente:** decidir eu mesmo as ambiguidades, uma a uma, antes de deixar o agente
 escrever a spec; e abrir uma segunda sessão (ou subagente) só para revisar testes contra a spec.
 
-**A coisa mais desconfortável que aprendi sobre como eu trabalho com IA:** ✍️ Diego: De algum modo, foi 
+**A coisa mais desconfortável que aprendi sobre como eu trabalho com IA:** ✍️ De algum modo, foi 
 possível entregar todo o projeto sem uma atuação de fato, não acho que seja a ser desconfortável, mas 
 não confiável seja o termo certo. Em caso de um projeto com a devida importância comercial, será inevitável
 o review de tudo que foi criado, dai a importância de realizar uma aprovação de execução em lotes menores.
